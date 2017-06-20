@@ -1,0 +1,13 @@
+{
+	"name": "realaffinities",
+	"version": "0.0.1",
+	
+	"dependencies": {
+	    "body-parser": "1.9.0",
+	    "ejs": "^1.0.0",
+	    "express": "4.9.5",
+	    "express-myconnection": "*",
+	    "express-validator": "^2.6.0",
+	    "mysql": "*"
+    }
+}

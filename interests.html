@@ -1,0 +1,129 @@
+
+
+<h1>
+	Real affinities <small>Search people you can deeply connect
+		with</small>
+</h1>
+
+
+
+<div id="header_well" class="well">
+	<div class="row">
+
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<a href="http://www.realaffinities.com"><img id="logo"
+				class="img-responsive" src="img/logo.png"></a>
+		</div>
+		<div class="col-lg-1 col-md-1 col-sm-1"></div>
+		<div class="col-lg-5 col-md-5 col-sm-5">
+
+			<div>
+				<h4>Add an interest</h4>
+
+				<div class="spacer"></div>
+
+				<div>
+					<div>
+						Interest name <input ng-model="interestName" ng-show=false>
+						<input class="search-field" ng-style="myInterestNameStyle"
+							type="text" ng-model="insertedInterestName"
+							ng-click="insertedInterestName = ''; myInterestNameStyle = {color:'black'}"
+							ng-init="insertedInterestName = 'i.e. playing live'">
+					</div>
+
+					<div style="margin-top: 10px">
+						Interest query <input ng-model="interestQuery" ng-show=false>
+						<input class="big-search-field" ng-style="myInterestQueryStyle"
+							type="text" ng-model="insertedInterestQuery"
+							ng-click="insertedInterestQuery = ''; myInterestQueryStyle = {color:'black'}"
+							ng-init="insertedInterestQuery = 'i.e. playing live OR concert OR street music'"
+							ng-enter="addInterest()">
+					</div>
+				</div>
+
+				<div class="spacer"></div>
+
+			</div>
+
+		</div>
+
+		<div class="col-lg-1 col-md-1 col-sm-1">
+
+			<div style="margin-top: 102px; margin-left: -34px">
+				<button class="btn btn-danger" id="btn_add" type="button"
+					ng-click="addInterest()">
+					<img src="img/like.png" width="25" class="img-responsive"
+						alt="Responsive image">
+				</button>
+			</div>
+		</div>
+
+		<div class="col-lg-3 col-md-3 col-sm-3">
+
+			<div style="display: inline-block;">
+				<button class="btn btn-primary" type="button"
+					ng-click="deleteInterests()">Delete all interests</button>
+			</div>
+
+			<div style="display: inline-block;">
+				<button class="btn btn-primary" type="button"
+					ng-click="goToProfilesPage()">Manage profiles</button>
+			</div>
+
+			<div style="margin-left: 174px; margin-top: 55px"
+				ng-style="loading && {'visibility': 'visible'} || !loading && {'visibility': 'hidden'}">
+				<i class="fa fa-refresh fa-spin fa-5x fa-fw"></i>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="interests">
+
+
+	<h3>Interests</h3>
+	<div class="row" id="interest{{$index}}"
+		ng-repeat="interest in interestList"
+		style="margin-left: 10px; margin-right: 10px">
+
+		<div class="boxed">
+			<div class="col-lg-3 col-md-3 col-sm-3" style="margin-top: 10px">
+				<h4>{{interest.name}}</h4>
+				Query: {{interest.query}}
+
+				<div class="spacer"></div>
+
+				<span>Tweets in &nbsp</span> <select
+					class="btn-danger dropdown-toggle" ng-model="interestLanguage"
+					ng-options="language.field as language.label for language in interestLanguages"></select>
+
+				<div class="spacer"></div>
+
+				<span>Collect up to &nbsp</span> <select
+					class="btn-danger dropdown-toggle" ng-model="tweetAmount"
+					ng-options="tweetAmount.field as tweetAmount.label for tweetAmount in tweetAmounts"></select>
+
+				<div class="spacer"></div>
+
+				<button class="btn btn-danger" id="btn_searchInterest" type="button"
+					ng-click="searchInterest(interest, interestLanguage, tweetAmount)"
+					style="margin-left: 0px">
+					<img src="img/search.png" width="25" class="img-responsive"
+						alt="Responsive image">
+				</button>
+			</div>
+
+			<div class="col-lg-9 col-md-9 col-sm-9"
+				style="margin-top: 20px; margin-bottom: 20px">
+
+				<textarea rows="11" cols="125" ng-enter="editInterest(interest)"
+					ng-model="interest.content"></textarea>
+			</div>
+		</div>
+
+		<div class="spacer"></div>
+	</div>
+
+
+
+</div>
