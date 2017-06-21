@@ -7,7 +7,7 @@ app.service('ElasticsearchService', function($q) {
 	this.index = function(profile) {
 
 		var deferred = $q.defer();
-		
+
 		var content = "";
 		var contentDates = [];
 		for ( var tweetIndex in profile.tweets) {
@@ -15,7 +15,7 @@ app.service('ElasticsearchService', function($q) {
 			content += profile.tweets[tweetIndex].text + " ";
 			contentDates.push(profile.tweets[tweetIndex].created_at);
 		}
-		
+
 		var promise = client.index({
 
 			index : 'real-affinities',
@@ -36,7 +36,7 @@ app.service('ElasticsearchService', function($q) {
 				contentDates : contentDates
 			}
 		});
-		
+
 		promise.done(function(data) {
 
 			deferred.resolve(data);
@@ -248,9 +248,56 @@ app.service('ElasticsearchService', function($q) {
 		return deferred.promise;
 	};
 
+	this.deleteInterest = function(interestName) {
+
+		// TODO
+		var deferred = $q.defer();
+
+		var query = {
+			index : 'real-affinities',
+			body : {
+				filtered : {
+					query : {
+						match_all : {}
+					},
+					filter : {
+						bool : {
+							must : [ {
+								term : {
+									name : interestName
+								}
+							}, {
+								exists : {
+									field : "is_interest"
+								}
+							} ]
+						}
+					}
+				}
+			}
+		};
+
+		var promise = client.deleteByQuery(query);
+
+		promise.done(function(data) {
+
+			console.log(JSON.stringify(data));
+
+			var innerPromise = client.indices.refresh('real-affinities');
+
+			innerPromise.done(function(data) {
+
+				deferred.resolve(data.ok);
+			});
+		});
+
+		return deferred.promise;
+
+	};
+
 	this.getProfilesMatchingInterest = function(interest) {
 
-		interest = interest.replace(" ", "-")
+		interest = interest.replace(" ", "-");
 
 		var deferred = $q.defer();
 

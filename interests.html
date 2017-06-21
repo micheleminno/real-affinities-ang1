@@ -84,7 +84,7 @@
 	<h3>&nbsp Interests</h3>
 	<div class="row" id="interest{{$index}}"
 		ng-repeat="interest in interestList"
-		style="margin-left: 10px; margin-right: 10px">
+		style="margin-left: 10px; margin-right: 40px">
 
 		<div class="boxed">
 			<div class="col-lg-3 col-md-3 col-sm-3" style="margin-top: 10px">
@@ -113,11 +113,19 @@
 				</button>
 			</div>
 
-			<div class="col-lg-9 col-md-9 col-sm-9"
+			<div class="col-lg-8 col-md-8 col-sm-8"
 				style="margin-top: 20px; margin-bottom: 20px">
 
-				<textarea class="interest-content" rows="11" cols="112" ng-enter="editInterest(interest)"
-					ng-model="interest.content"></textarea>
+				<textarea class="interest-content" rows="11" cols="112"
+					ng-enter="editInterest(interest)" ng-model="interest.content"></textarea>
+			</div>
+			<div class="col-lg-1 col-md-1 col-sm-1"
+				style="margin-top: 5px; margin-bottom: 20px">
+
+				<button type="button" class="close" aria-label="Close"
+					ng-click="deleteInterest(interest)">
+					<span aria-hidden="true">&times;</span>
+				</button>
 			</div>
 		</div>
 

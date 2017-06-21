@@ -369,7 +369,7 @@ var mainController = controllers
 						for ( var newProfilesIndex in profiles) {
 
 							var found = false;
-							
+
 							for ( var profilesIndex in $scope.profileList) {
 
 								if ($scope.profileList[profilesIndex]["id"] == profiles[newProfilesIndex]["id"]) {
@@ -568,6 +568,17 @@ var interestsController = controllers.controller("InterestsCtrl", function(
 				$scope.showInterests();
 			}
 		});
+	};
+
+	$scope.deleteInterest = function(interest) {
+
+		ElasticsearchService.deleteInterest(interest.name).then(
+				function(deleted) {
+
+					if (deleted) {
+						$scope.showInterests();
+					}
+				});
 	};
 
 	$scope.searchInterest = function(interest, interestLanguage, tweetAmount) {
