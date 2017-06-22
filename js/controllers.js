@@ -552,9 +552,11 @@ var interestsController = controllers.controller("InterestsCtrl", function(
 		$scope.interestQuery = $scope.insertedInterestQuery;
 
 		ElasticsearchService.addInterest($scope.interestName,
-				$scope.interestQuery).then(function() {
+				$scope.interestQuery).then(function(addedInterest) {
 
-			$scope.showInterests();
+			if (addedInterest) {
+				$scope.showInterests();
+			}
 		});
 	};
 
@@ -572,6 +574,8 @@ var interestsController = controllers.controller("InterestsCtrl", function(
 
 	$scope.deleteInterest = function(interest) {
 
+		$scope.loading = true;
+		
 		ElasticsearchService.deleteInterest(interest.name).then(
 				function(deleted) {
 

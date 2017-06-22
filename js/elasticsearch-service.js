@@ -137,7 +137,14 @@ app.service('ElasticsearchService', function($q) {
 
 		promise.done(function(data) {
 
-			deferred.resolve(data);
+			console.log(JSON.stringify(data));
+
+			var innerPromise = client.indices.refresh('real-affinities');
+
+			innerPromise.done(function(data) {
+
+				deferred.resolve(data.ok);
+			});
 		});
 
 		return deferred.promise;
@@ -250,7 +257,6 @@ app.service('ElasticsearchService', function($q) {
 
 	this.deleteInterest = function(interestName) {
 
-		// TODO
 		var deferred = $q.defer();
 
 		var query = {
