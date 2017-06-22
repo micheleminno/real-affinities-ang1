@@ -152,8 +152,8 @@
 						value="{{ profile.inTarget ? 'Remove from target' : 'Add to target'}}"
 						ng-click="updateTarget(profile)"> <a
 						href="https://twitter.com/{{profile.screen_name}}"><img
-						class="img-responsive" ng-src="{{profile.profile_image_url}}"
-						height="100" width="100"></a>
+						class="img-responsive" ng-src="{{profileImages[profile.id]}}"
+						height="150" width="150"></a>
 					<div align="left">
 						<a class="username little-text"
 							href="https://twitter.com/{{profile.screen_name}}"> {{

@@ -3,7 +3,7 @@ var controllers = angular.module('controllers', []);
 var mainController = controllers
 		.controller(
 				"MainCtrl",
-				function($scope, $location, TwitterService,
+				function($scope, $location, HttpService, TwitterService,
 						ElasticsearchService, MysqlService) {
 
 					$scope.updateTarget = function(profile) {
@@ -111,6 +111,53 @@ var mainController = controllers
 																});
 											}
 										});
+					};
+
+					$scope.updateProfileImg = function(profileId,
+							normalImageUrl) {
+
+						var biggerImageUrl = normalImageUrl.substring(0,
+								normalImageUrl.lastIndexOf("normal"));
+						biggerImageUrl = biggerImageUrl + "400x400";
+						var resultUrl = biggerImageUrl + ".jpg";
+
+						HttpService
+								.callThisUrl(resultUrl)
+								.then(
+										function(found) {
+
+											if (!found) {
+
+												resultUrl = biggerImageUrl
+														+ ".jpeg";
+
+												HttpService
+														.callThisUrl(resultUrl)
+														.then(
+																function(found) {
+
+																	if (!found) {
+
+																		resultUrl = biggerImageUrl
+																				+ ".png";
+																	}
+
+																	console
+																			.log("Modified img url: "
+																					+ resultUrl);
+
+																	$scope.profileImages[profileId] = resultUrl;
+																});
+												resultUrl = biggerImageUrl
+														+ ".jpeg";
+											}
+
+											console.log("Modified img url: "
+													+ resultUrl);
+
+											$scope.profileImages[profileId] = resultUrl;
+										});
+
 					};
 
 					$scope.filter = function() {
@@ -396,6 +443,11 @@ var mainController = controllers
 
 								profiles[newProfilesIndex]["status"] = "new";
 
+								var actualImageUrl = profiles[newProfilesIndex]["profile_image_url"];
+								var profileId = profiles[newProfilesIndex]["id"];
+								$scope.updateProfileImg(profileId,
+										actualImageUrl);
+
 								profilesToAdd.push(profiles[newProfilesIndex]);
 							}
 						}
@@ -575,7 +627,7 @@ var interestsController = controllers.controller("InterestsCtrl", function(
 	$scope.deleteInterest = function(interest) {
 
 		$scope.loading = true;
-		
+
 		ElasticsearchService.deleteInterest(interest.name).then(
 				function(deleted) {
 

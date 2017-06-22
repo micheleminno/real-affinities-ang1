@@ -14,18 +14,30 @@ app.config([ '$routeProvider', function($routeProvider) {
 
 } ]);
 
-app.directive('ngEnter', function () {
-    return function (scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
-            if(event.which === 13) {
-                scope.$apply(function (){
-                    scope.$eval(attrs.ngEnter);
-                });
+app.directive('ngEnter', function() {
+	return function(scope, element, attrs) {
+		element.bind("keydown keypress", function(event) {
+			if (event.which === 13) {
+				scope.$apply(function() {
+					scope.$eval(attrs.ngEnter);
+				});
 
-                event.preventDefault();
-            }
-        });
-    };
+				event.preventDefault();
+			}
+		});
+	};
+});
+
+app.directive('errSrc', function() {
+	return {
+		link : function(scope, element, attrs) {
+			element.bind('error', function() {
+				if (attrs.src != attrs.errSrc) {
+					attrs.$set('src', attrs.errSrc);
+				}
+			});
+		}
+	};
 });
 
 app.filter('range', function() {

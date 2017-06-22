@@ -2,6 +2,7 @@ var initProfiles = function($scope) {
 
 	$scope.keywords = "";
 	$scope.profileList = [];
+	$scope.profileImages = [];
 	$scope.userScreenName = "";
 	$scope.rowsAmount = 0;
 	$scope.loading = false;
