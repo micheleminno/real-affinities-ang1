@@ -47,11 +47,14 @@
 
 .boxed {
 	border: 2px solid black;
-	overflow-y: scroll;
-	height: 275px;
+	height: 300px;
 	border-radius: 7px;
 	padding-top: 5px;
 	border-color: black;
+}
+
+.boxed-profile {
+	overflow-y: scroll;
 }
 
 .btn-in-target {
@@ -79,6 +82,7 @@
 	border-radius: 7px;
 	padding: 5px;
 	margin-top: 15px;
+	background-color: white;
 }
 
 .interest-content {
