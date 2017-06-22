@@ -150,9 +150,10 @@
 						ng-class="{'btn btn-primary btn-not-in-target': !profile.inTarget, 'btn btn-danger btn-in-target': profile.inTarget}"
 						type="submit"
 						value="{{ profile.inTarget ? 'Remove from target' : 'Add to target'}}"
-						ng-click="updateTarget(profile)"> <img
+						ng-click="updateTarget(profile)"> <a
+						href="https://twitter.com/{{profile.screen_name}}"><img
 						class="img-responsive" ng-src="{{profile.profile_image_url}}"
-						height="100" width="100">
+						height="100" width="100"></a>
 					<div align="left">
 						<a class="username little-text"
 							href="https://twitter.com/{{profile.screen_name}}"> {{
