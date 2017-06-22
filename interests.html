@@ -36,6 +36,7 @@
 						<input class="big-search-field" ng-style="myInterestQueryStyle"
 							type="text" ng-model="insertedInterestQuery"
 							ng-click="insertedInterestQuery = ''; myInterestQueryStyle = {color:'black'}"
+							ng-keyup="myInterestQueryStyle = {color:'black'}"
 							ng-init="insertedInterestQuery = 'i.e. playing live OR concert OR street music'"
 							ng-enter="addInterest()">
 					</div>
