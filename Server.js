@@ -6,6 +6,8 @@ var config = require('./config.js');
 var target = require('./target.js');
 var affinities = require('./affinities.js');
 var twitter = require('./twitter.js');
+var utilities = require('./utilities.js');
+
 
 app = express();
 
@@ -51,6 +53,8 @@ app.get('/twitter/search/users', twitter.searchUsers);
 app.get('/twitter/search/tweets', twitter.searchTweets);
 app.get('/twitter/tweets', twitter.userTweets);
 app.get('/twitter/users', twitter.users);
+
+app.get('/utilities/url-exists', utilities.checkUrl);
 
 var server = app.listen(3000, function() {
 

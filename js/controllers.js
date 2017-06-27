@@ -122,7 +122,7 @@ var mainController = controllers
 						var resultUrl = biggerImageUrl + ".jpg";
 
 						HttpService
-								.callThisUrl(resultUrl)
+								.urlExists(resultUrl)
 								.then(
 										function(found) {
 
@@ -132,7 +132,7 @@ var mainController = controllers
 														+ ".jpeg";
 
 												HttpService
-														.callThisUrl(resultUrl)
+														.urlExists(resultUrl)
 														.then(
 																function(found) {
 
@@ -143,19 +143,18 @@ var mainController = controllers
 																	}
 
 																	console
-																			.log("Modified img url: "
+																			.log("Img url: "
 																					+ resultUrl);
 
 																	$scope.profileImages[profileId] = resultUrl;
 																});
-												resultUrl = biggerImageUrl
-														+ ".jpeg";
+											} else {
+
+												console.log("Img url: "
+														+ resultUrl);
+
+												$scope.profileImages[profileId] = resultUrl;
 											}
-
-											console.log("Modified img url: "
-													+ resultUrl);
-
-											$scope.profileImages[profileId] = resultUrl;
 										});
 
 					};

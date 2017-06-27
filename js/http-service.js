@@ -1,19 +1,16 @@
 app.service('HttpService', function($http, $q) {
 
-	this.callThisUrl = function(url) {
+	var myServerUrl = 'http://localhost:3000';
+
+	this.urlExists = function(url) {
 
 		var deferred = $q.defer();
 
-		$http.get(url).success(function() {
+		$http.get(myServerUrl + '/utilities/url-exists?url=' + url).success(
+				function(checkedUrl) {
 
-			deferred.resolve(true);
-
-		}).error(function() {
-
-			console.log("Invalid Url: " + url);
-
-			deferred.resolve(false);
-		});
+					deferred.resolve(checkedUrl.exists);
+				});
 
 		return deferred.promise;
 	};
