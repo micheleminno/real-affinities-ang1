@@ -121,7 +121,7 @@ app.service('ElasticsearchService', function($q) {
 
 		var deferred = $q.defer();
 
-		var nameWithoutInnerSpaces = name.replace(" ", "-");
+		var nameWithoutInnerSpaces = name.replace(/ /g, "-");
 
 		var promise = client.index({
 
@@ -264,6 +264,8 @@ app.service('ElasticsearchService', function($q) {
 
 	this.deleteInterest = function(interestName) {
 
+		var nameWithoutInnerSpaces = interestName.replace(/ /g, "-");
+
 		var deferred = $q.defer();
 
 		var query = {
@@ -271,19 +273,14 @@ app.service('ElasticsearchService', function($q) {
 			body : {
 				filtered : {
 					query : {
-						match_all : {}
+						ids : {
+							type : 'profile',
+							values : [ nameWithoutInnerSpaces ]
+						}
 					},
 					filter : {
-						bool : {
-							must : [ {
-								term : {
-									name : interestName
-								}
-							}, {
-								exists : {
-									field : "is_interest"
-								}
-							} ]
+						exists : {
+							field : "is_interest"
 						}
 					}
 				}
