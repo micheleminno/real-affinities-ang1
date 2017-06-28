@@ -92,3 +92,7 @@
 .interest-content {
 	border-radius: 7px;
 }
+
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+}

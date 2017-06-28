@@ -171,7 +171,14 @@ app.service('ElasticsearchService', function($q) {
 
 		promise.done(function(data) {
 
-			deferred.resolve(data);
+			console.log(JSON.stringify(data));
+
+			var innerPromise = client.indices.refresh('real-affinities');
+
+			innerPromise.done(function(data) {
+
+				deferred.resolve(data);
+			});
 		});
 
 		return deferred.promise;
