@@ -93,6 +93,34 @@
 	border-radius: 7px;
 }
 
-.tooltip:hover .tooltiptext {
+.interest-content:focus {
+	background-color: green;
+	color: white;
+}
+
+.edit-interest-label {
+	border: 2px solid black;
+	border-radius: 7px;
+	background-color: green;
+	cursor: default;
+	color: white;
+}
+
+.save-interest-label {
+	border: 2px solid black;
+	border-radius: 7px;
+	background-color: blue;
+	cursor: default;
+	color: white;
+	visibility: hidden
+}
+
+.interest-content-box textarea.interest-content:focus+button.edit-interest-label
+	{
+	visibility: hidden;
+}
+
+.interest-content-box textarea.interest-content:focus ~button.save-interest-label
+	{
 	visibility: visible;
 }

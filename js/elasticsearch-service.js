@@ -154,7 +154,7 @@ app.service('ElasticsearchService', function($q) {
 
 		var deferred = $q.defer();
 
-		var nameWithoutInnerSpaces = name.replace(" ", "-");
+		var nameWithoutInnerSpaces = name.replace(/ /g, "-");
 
 		var promise = client.update({
 
