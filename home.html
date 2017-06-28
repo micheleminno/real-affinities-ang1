@@ -194,7 +194,7 @@
 				<div id="tweets" class="col-lg-12 col-md-12 col-sm-12">
 
 					<div ng-repeat="tweet in profile.tweets" class="tweet-box">
-						<small>{{tweet.created_at | tweetTime | date:'dd-MM-yyyy'}}</small><br />
+						<small class="tweet-date">{{tweet.created_at | tweetTime | date:'dd-MM-yyyy'}}</small><br />
 						<div style="margin-top: 5px">{{tweet.text}}</div>
 					</div>
 				</div>

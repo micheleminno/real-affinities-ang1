@@ -85,6 +85,10 @@
 	background-color: white;
 }
 
+.tweet-date {
+	color: #428bca;
+}
+
 .interest-content {
 	border-radius: 7px;
 }
