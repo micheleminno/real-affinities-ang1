@@ -48,3 +48,10 @@ app.filter('range', function() {
 		return input;
 	};
 });
+
+app.filter('tweetTime', function() {
+	return function(input) {
+
+		return Date.parse(input);
+	};
+});
