@@ -7,6 +7,10 @@ var OK = 200;
 var ERROR = 400;
 var TOO_MANY_REQUESTS = 429;
 
+var HASHTAGS_REGEXP = /(?:^|\W)#(\w+)(?!\w)/g;
+var MENTIONS_REGXP = /(?:^|\W)@(\w+)(?!\w)/g;
+var URLS_REGEXP = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
 var userAccounts = JSON.parse(fs
 		.readFileSync("./twitter-accounts.json", "utf8"));
 
@@ -65,9 +69,9 @@ function isStopword(word, lang) {
 
 function getHashtags(text) {
 
-	var re = /(?:^|\W)#(\w+)(?!\w)/g, match, matches = [];
+	var match, matches = [];
 
-	while (match = re.exec(text)) {
+	while (match = HASHTAGS_REGEXP.exec(text)) {
 		matches.push(match[1]);
 	}
 
@@ -76,9 +80,9 @@ function getHashtags(text) {
 
 function getMentionedUsers(text) {
 
-	var re = /(?:^|\W)@(\w+)(?!\w)/g, match, matches = [];
+	var match, matches = [];
 
-	while (match = re.exec(text)) {
+	while (match = MENTIONS_REGXP.exec(text)) {
 		matches.push(match[1]);
 	}
 
@@ -104,9 +108,9 @@ function getRetweetedUser(text) {
 
 function getUrls(text) {
 
-	var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig, match, matches = [];
+	var match, matches = [];
 
-	while (match = re.exec(text)) {
+	while (match = URLS_REGEXP.exec(text)) {
 		matches.push(match[1]);
 	}
 
