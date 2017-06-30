@@ -47,7 +47,7 @@ function sendResponse(wordOccurrences, response) {
 	
 	text = text.substring(0, text.length - 1);
 
-	console.log(text);
+	console.log("\nResult: " + text);
 	response.status(OK).json('data', {value: text});
 };
 
@@ -132,6 +132,8 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 
 									var text = tweets[tweetIndex].text;
 
+									console.log("Tweet text: " + text);
+									
 									tweetsInfo.push({
 										id : stringId,
 										date : createdAt,
