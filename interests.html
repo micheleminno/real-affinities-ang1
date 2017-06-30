@@ -35,7 +35,7 @@
 						Interest query <input ng-model="interestQuery" ng-show=false>
 						<input class="big-search-field" ng-style="myInterestQueryStyle"
 							type="text" ng-model="insertedInterestQuery"
-							ng-click="insertedInterestQuery = ''; myInterestQueryStyle = {color:'black'}"
+							ng-click="insertedInterestQuery = ''; myInterestQueryStyle = {color:'black'}; addInterestActive = true"
 							ng-keyup="myInterestQueryStyle = {color:'black'}"
 							ng-init="insertedInterestQuery = 'i.e. playing live OR concert OR street music'"
 							ng-enter="addInterest()">
@@ -121,7 +121,7 @@
 					ng-enter="editInterest(interest)" ng-model="interest.content">
 				</textarea>
 
-				<button class="edit-interest-label">Click on the text to edit</button>
+				<button class="edit-interest-label">Click on text to edit</button>
 				<button class="save-interest-label">Type 'Enter' to save</button>
 			</div>
 			<div class="col-lg-1 col-md-1 col-sm-1"
