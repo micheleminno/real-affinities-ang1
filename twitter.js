@@ -44,11 +44,13 @@ function sendResponse(wordOccurrences, response) {
 			break;
 		}
 	}
-	
+
 	text = text.substring(0, text.length - 1);
 
 	console.log("\nResult: " + text);
-	response.status(OK).json('data', {value: text});
+	response.status(OK).json('data', {
+		value : text
+	});
 };
 
 function isStopword(word, lang) {
@@ -60,6 +62,91 @@ function isStopword(word, lang) {
 
 	return false;
 };
+
+function getHashtags(text) {
+
+	var re = /(?:^|\W)#(\w+)(?!\w)/g, match, matches = [];
+
+	while (match = re.exec(text)) {
+		matches.push(match[1]);
+	}
+
+	return matches;
+}
+
+function getMentionedUsers(text) {
+
+	var re = /(?:^|\W)@(\w+)(?!\w)/g, match, matches = [];
+
+	while (match = re.exec(text)) {
+		matches.push(match[1]);
+	}
+
+	return matches;
+}
+
+function getRetweetedUser(text) {
+
+	var retweetedUser = [];
+
+	if (text.indexOf('RT') === 0) {
+
+		var user = text.substring(3, text.indexOf(':'));
+		if (user.indexOf('@') === 0) {
+			user = user.substring(1);
+		}
+
+		retweetedUser.push(user);
+	}
+
+	return retweetedUser;
+}
+
+function getUrls(text) {
+
+	var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig, match, matches = [];
+
+	while (match = re.exec(text)) {
+		matches.push(match[1]);
+	}
+
+	return matches;
+}
+
+function logTweetInfo(text) {
+
+	console.log("\nTweet text: " + text);
+
+	var hashtags = getHashtags(text);
+	var mentions = getMentionedUsers(text);
+	var retweetedUser = getRetweetedUser(text);
+	var urls = getUrls(text);
+
+	if (hashtags.length > 0) {
+
+		console.log("Tweet hashtags: " + hashtags);
+	}
+
+	if (retweetedUser.length == 1) {
+
+		console.log("It's a retweet from user: " + retweetedUser);
+
+		if (mentions.length > 0) {
+
+			mentions.shift();
+		}
+	}
+
+	if (mentions.length > 0) {
+
+		console.log("Tweet mentioned users: " + mentions);
+	}
+
+	if (urls.length > 0) {
+
+		console.log("Tweet mentioned urls: " + urls);
+	}
+}
 
 function callTweetSearch(method, options, credentialIndex, response, docIndex,
 		wordOccurrences, tweetAmount) {
@@ -91,7 +178,8 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 
 									callTweetSearch(method, options,
 											credentialIndex, response,
-											docIndex, wordOccurrences, tweetAmount);
+											docIndex, wordOccurrences,
+											tweetAmount);
 
 								} else {
 									console.log("All credentials used");
@@ -119,7 +207,7 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 								var minId = bigInt(tweets[0].id_str);
 
 								console.log(tweets[0].created_at);
-								
+
 								for (tweetIndex in tweets) {
 
 									var createdAt = tweets[tweetIndex].created_at;
@@ -132,8 +220,8 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 
 									var text = tweets[tweetIndex].text;
 
-									console.log("Tweet text: " + text);
-									
+									logTweetInfo(text);
+
 									tweetsInfo.push({
 										id : stringId,
 										date : createdAt,
@@ -173,7 +261,8 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 
 									callTweetSearch(method, options,
 											credentialIndex, response,
-											newDocIndex, wordOccurrences, tweetAmount);
+											newDocIndex, wordOccurrences,
+											tweetAmount);
 								} else {
 									sendResponse(wordOccurrences, response);
 								}
@@ -189,7 +278,7 @@ exports.searchTweets = function(req, res) {
 	var tweetAmount = req.query.amount;
 
 	console.log("Searching up to " + tweetAmount + " tweets");
-	
+
 	var method = 'search/tweets';
 	var options = {
 		q : q,
@@ -274,7 +363,7 @@ exports.userTweets = function(req, res) {
 	var method = 'statuses/user_timeline';
 	var options = {
 		screen_name : user,
-		count: 100
+		count : 100
 	};
 
 	call(method, options, 0, res);
