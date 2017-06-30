@@ -300,6 +300,12 @@ var mainController = controllers
 
 					$scope.search = function() {
 
+						if (!$scope.searchActive
+								|| $scope.insertedUserKeywords == '') {
+
+							return;
+						}
+
 						$scope.loading = true;
 
 						$scope.mode.active = "keywordsSearchResult";
@@ -459,6 +465,11 @@ var mainController = controllers
 
 					$scope.addPotentialAccount = function() {
 
+						if (!$scope.addPotentialAccountActive
+								|| $scope.insertedPotentialAccount == '') {
+
+							return;
+						}
 						$scope.loading = true;
 
 						$scope.potentialAccount = $scope.insertedPotentialAccount;

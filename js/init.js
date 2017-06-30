@@ -1,6 +1,8 @@
 var initProfiles = function($scope) {
 
 	$scope.keywords = "";
+	$scope.searchActive = false;
+	$scope.addPotentialAccountActive = false;
 	$scope.profileList = [];
 	$scope.profileImages = [];
 	$scope.userScreenName = "";

@@ -25,7 +25,7 @@
 						<input type="search" ng-model="userKeywords" ng-show=false>
 						<input class="big-search-field" ng-style="myUserSearchStyle"
 							type="text" ng-model="insertedUserKeywords"
-							ng-click="insertedUserKeywords = ''; myUserSearchStyle = {color:'black'}"
+							ng-click="insertedUserKeywords = ''; myUserSearchStyle = {color:'black'}; searchActive = true"
 							ng-init="insertedUserKeywords = 'i.e. funk rock'"
 							ng-enter="search()">
 
@@ -43,7 +43,7 @@
 							ng-model="potentialAccount" ng-show=false> <input
 							class="search-field" ng-style="myAccountStyle" type="text"
 							ng-model="insertedPotentialAccount"
-							ng-click="insertedPotentialAccount = ''; myAccountStyle = {color:'black'}"
+							ng-click="insertedPotentialAccount = ''; myAccountStyle = {color:'black'}; addPotentialAccountActive = true"
 							ng-init="insertedPotentialAccount = 'i.e. pitchfork'"
 							ng-enter="addPotentialAccount()">
 
@@ -194,7 +194,8 @@
 				<div id="tweets" class="col-lg-12 col-md-12 col-sm-12">
 
 					<div ng-repeat="tweet in profile.tweets" class="tweet-box">
-						<small class="tweet-date">{{tweet.created_at | tweetTime | date:'dd-MM-yyyy'}}</small><br />
+						<small class="tweet-date">{{tweet.created_at | tweetTime |
+							date:'dd-MM-yyyy'}}</small><br />
 						<div style="margin-top: 5px">{{tweet.text}}</div>
 					</div>
 				</div>
