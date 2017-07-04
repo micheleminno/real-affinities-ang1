@@ -1,7 +1,10 @@
 var Twit = require('twit');
 var fs = require("fs");
 var bigInt = require("big-integer");
-var natural = require('natural'), TfIdf = natural.TfIdf, tfidf;
+
+var natural = require('natural');
+var TfIdf = natural.TfIdf, tfidf;
+var NGrams = natural.NGrams;
 
 var OK = 200;
 var ERROR = 400;
@@ -10,6 +13,7 @@ var TOO_MANY_REQUESTS = 429;
 var HASHTAGS_REGEXP = /(?:^|\W)#(\w+)(?!\w)/g;
 var MENTIONS_REGEXP = /(?:^|\W)@(\w+)(?!\w)/g;
 var URLS_REGEXP = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+var NUMBERS_REGEXP = /\b(\d+)\b/g;
 
 var HASHTAGS = 'HASHTAGS';
 var MENTIONS = 'MENTIONS';
@@ -19,11 +23,11 @@ var UNIGRAMS = 'UNIGRAMS';
 var BIGRAMS = 'BIGRAMS';
 var TRIGRAMS = 'TRIGRAMS';
 
-var HASHTAGS_AMOUNT = 10;
+var HASHTAGS_AMOUNT = 20;
 var MENTIONS_AMOUNT = 10;
 var URLS_AMOUNT = 3;
 var RETWEETS_AMOUNT = 3;
-var UNIGRAMS_AMOUNT = 40;
+var UNIGRAMS_AMOUNT = 100;
 var BIGRAMS_AMOUNT = 20;
 var TRIGRAMS_AMOUNT = 20;
 
@@ -54,12 +58,25 @@ function getSortedKeys(obj) {
 
 function sendResponse(resultBox, response) {
 
+	console.log("\n\n*******" + HASHTAGS + "*******\n");
 	var hashtagsText = getText(resultBox[HASHTAGS], HASHTAGS_AMOUNT);
+
+	console.log("\n\n*******" + MENTIONS + "*******\n");
 	var mentionsText = getText(resultBox[MENTIONS], MENTIONS_AMOUNT);
+
+	console.log("\n\n*******" + RETWEETS + "*******\n");
 	var retweetsText = getText(resultBox[RETWEETS], RETWEETS_AMOUNT);
+
+	console.log("\n\n*******" + URLS + "*******\n");
 	var urlsText = getText(resultBox[URLS], URLS_AMOUNT);
+
+	console.log("\n\n*******" + UNIGRAMS + "*******\n");
 	var unigramsText = getText(resultBox[UNIGRAMS], UNIGRAMS_AMOUNT);
+
+	console.log("\n\n*******" + BIGRAMS + "*******\n");
 	var bigramsText = getText(resultBox[BIGRAMS], BIGRAMS_AMOUNT);
+
+	console.log("\n\n*******" + TRIGRAMS + "*******\n");
 	var trigramsText = getText(resultBox[TRIGRAMS], TRIGRAMS_AMOUNT);
 
 	var text = hashtagsText + " " + mentionsText + " " + retweetsText + " "
@@ -80,7 +97,10 @@ function getText(occurrences, amount) {
 	for (sortedItemIndex in sortedItems) {
 
 		if (sortedItemIndex < amount) {
+
 			text += sortedItems[sortedItemIndex] + ' ';
+			console.log(sortedItems[sortedItemIndex]);
+
 		} else {
 			break;
 		}
@@ -127,9 +147,9 @@ function getEntities(text, label) {
 	return matches;
 }
 
-function updateEntities(newElements, resultBox, label) {
+function updateEntities(newElements, resultBox, text, label) {
 
-	console.log(label + ": " + newElements);
+	// console.log(label + ": " + newElements);
 
 	newElements.forEach(
 
@@ -143,8 +163,11 @@ function updateEntities(newElements, resultBox, label) {
 
 			resultBox[label][item] = 1;
 		}
+
+		text = text.replace(new RegExp(item, "g"), '');
 	});
 
+	return text;
 }
 
 function updateUnigrams(tfidf, language, docIndex, resultBox) {
@@ -169,14 +192,35 @@ function updateUnigrams(tfidf, language, docIndex, resultBox) {
 					});
 }
 
+function getNGrams(text, label) {
+
+	var result = [];
+
+	if (label === BIGRAMS) {
+
+		result = NGrams.bigrams(text);
+	} else if (label === TRIGRAMS) {
+
+		result = NGrams.trigrams(text);
+	}
+
+	return result;
+}
+
 function updateResults(tfidf, language, docIndex, text, resultBox) {
 
 	console.log("\nTweet: " + text);
 
-	updateEntities(getEntities(text, HASHTAGS), resultBox, HASHTAGS);
-	updateEntities(getEntities(text, RETWEETS), resultBox, RETWEETS);
-	updateEntities(getEntities(text, MENTIONS), resultBox, MENTIONS);
-	updateEntities(getEntities(text, URLS), resultBox, URLS);
+	text = updateEntities(getEntities(text, HASHTAGS), resultBox, text,
+			HASHTAGS);
+
+	text = updateEntities(getEntities(text, RETWEETS), resultBox, text,
+			RETWEETS);
+
+	text = updateEntities(getEntities(text, MENTIONS), resultBox, text,
+			MENTIONS);
+
+	text = updateEntities(getEntities(text, URLS), resultBox, text, URLS);
 
 	if (resultBox[RETWEETS].length == 1) {
 
@@ -186,9 +230,13 @@ function updateResults(tfidf, language, docIndex, text, resultBox) {
 		}
 	}
 
+	text = text.replace(NUMBERS_REGEXP, '');
+
+	tfidf.addDocument(text);
+
 	updateUnigrams(tfidf, language, docIndex, resultBox);
-	// updateBigrams(tfidf, language, docIndex, resultBox);
-	// updateTrigrams(tfidf, language, docIndex, resultBox);
+	//updateEntities(getNGrams(text, BIGRAMS), resultBox, text, BIGRAMS);
+	//updateEntities(getNGrams(text, TRIGRAMS), resultBox, text, TRIGRAMS);
 }
 
 function callTweetSearch(method, options, credentialIndex, response, docIndex,
@@ -266,8 +314,6 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 										date : createdAt,
 										text : text
 									});
-
-									tfidf.addDocument(text);
 
 									var currentDocIndex = parseInt(docIndex)
 											+ parseInt(tweetIndex);
