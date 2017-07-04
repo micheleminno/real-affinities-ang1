@@ -8,8 +8,24 @@ var ERROR = 400;
 var TOO_MANY_REQUESTS = 429;
 
 var HASHTAGS_REGEXP = /(?:^|\W)#(\w+)(?!\w)/g;
-var MENTIONS_REGXP = /(?:^|\W)@(\w+)(?!\w)/g;
+var MENTIONS_REGEXP = /(?:^|\W)@(\w+)(?!\w)/g;
 var URLS_REGEXP = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
+var HASHTAGS = 'HASHTAGS';
+var MENTIONS = 'MENTIONS';
+var URLS = 'URLS';
+var RETWEETS = 'RETWEETS';
+var UNIGRAMS = 'UNIGRAMS';
+var BIGRAMS = 'BIGRAMS';
+var TRIGRAMS = 'TRIGRAMS';
+
+var HASHTAGS_AMOUNT = 10;
+var MENTIONS_AMOUNT = 10;
+var URLS_AMOUNT = 3;
+var RETWEETS_AMOUNT = 3;
+var UNIGRAMS_AMOUNT = 40;
+var BIGRAMS_AMOUNT = 20;
+var TRIGRAMS_AMOUNT = 20;
 
 var userAccounts = JSON.parse(fs
 		.readFileSync("./twitter-accounts.json", "utf8"));
@@ -36,13 +52,34 @@ function getSortedKeys(obj) {
 	});
 };
 
-function sendResponse(wordOccurrences, response) {
+function sendResponse(resultBox, response) {
 
-	var sortedItems = getSortedKeys(wordOccurrences);
+	var hashtagsText = getText(resultBox[HASHTAGS], HASHTAGS_AMOUNT);
+	var mentionsText = getText(resultBox[MENTIONS], MENTIONS_AMOUNT);
+	var retweetsText = getText(resultBox[RETWEETS], RETWEETS_AMOUNT);
+	var urlsText = getText(resultBox[URLS], URLS_AMOUNT);
+	var unigramsText = getText(resultBox[UNIGRAMS], UNIGRAMS_AMOUNT);
+	var bigramsText = getText(resultBox[BIGRAMS], BIGRAMS_AMOUNT);
+	var trigramsText = getText(resultBox[TRIGRAMS], TRIGRAMS_AMOUNT);
+
+	var text = hashtagsText + " " + mentionsText + " " + retweetsText + " "
+			+ urlsText + " " + unigramsText + " " + bigramsText + " "
+			+ trigramsText;
+
+	console.log("\nResult: " + text);
+
+	response.status(OK).json('data', {
+		value : text
+	});
+};
+
+function getText(occurrences, amount) {
+
+	var sortedItems = getSortedKeys(occurrences);
 	var text = '';
 	for (sortedItemIndex in sortedItems) {
 
-		if (sortedItemIndex < 200) {
+		if (sortedItemIndex < amount) {
 			text += sortedItems[sortedItemIndex] + ' ';
 		} else {
 			break;
@@ -51,10 +88,7 @@ function sendResponse(wordOccurrences, response) {
 
 	text = text.substring(0, text.length - 1);
 
-	console.log("\nResult: " + text);
-	response.status(OK).json('data', {
-		value : text
-	});
+	return text;
 };
 
 function isStopword(word, lang) {
@@ -67,93 +101,98 @@ function isStopword(word, lang) {
 	return false;
 };
 
-function getHashtags(text) {
+function getEntities(text, label) {
 
 	var match, matches = [];
 
-	while (match = HASHTAGS_REGEXP.exec(text)) {
-		matches.push(match[1]);
-	}
+	if (label === RETWEETS) {
 
-	return matches;
-}
+		if (text.indexOf('RT') === 0) {
 
-function getMentionedUsers(text) {
+			var user = text.substring(3, text.indexOf(':'));
+			if (user.indexOf('@') === 0) {
+				user = user.substring(1);
+			}
 
-	var match, matches = [];
-
-	while (match = MENTIONS_REGXP.exec(text)) {
-		matches.push(match[1]);
-	}
-
-	return matches;
-}
-
-function getRetweetedUser(text) {
-
-	var retweetedUser = [];
-
-	if (text.indexOf('RT') === 0) {
-
-		var user = text.substring(3, text.indexOf(':'));
-		if (user.indexOf('@') === 0) {
-			user = user.substring(1);
+			matches.push(user);
 		}
+	} else {
 
-		retweetedUser.push(user);
-	}
-
-	return retweetedUser;
-}
-
-function getUrls(text) {
-
-	var match, matches = [];
-
-	while (match = URLS_REGEXP.exec(text)) {
-		matches.push(match[1]);
-	}
-
-	return matches;
-}
-
-function logTweetInfo(text) {
-
-	console.log("\nTweet text: " + text);
-
-	var hashtags = getHashtags(text);
-	var mentions = getMentionedUsers(text);
-	var retweetedUser = getRetweetedUser(text);
-	var urls = getUrls(text);
-
-	if (hashtags.length > 0) {
-
-		console.log("Tweet hashtags: " + hashtags);
-	}
-
-	if (retweetedUser.length == 1) {
-
-		console.log("It's a retweet from user: " + retweetedUser);
-
-		if (mentions.length > 0) {
-
-			mentions.shift();
+		var regExp = eval(label + "_REGEXP");
+		while (match = regExp.exec(text)) {
+			matches.push(match[1]);
 		}
 	}
 
-	if (mentions.length > 0) {
+	return matches;
+}
 
-		console.log("Tweet mentioned users: " + mentions);
+function updateEntities(newElements, resultBox, label) {
+
+	console.log(label + ": " + newElements);
+
+	newElements.forEach(
+
+	function(item) {
+
+		if (resultBox[label][item]) {
+
+			resultBox[label][item]++;
+
+		} else {
+
+			resultBox[label][item] = 1;
+		}
+	});
+
+}
+
+function updateUnigrams(tfidf, language, docIndex, resultBox) {
+
+	tfidf
+			.listTerms(docIndex)
+			.forEach(
+
+					function(item) {
+
+						if (!isStopword(item.term, language)) {
+
+							if (resultBox[UNIGRAMS][item.term]) {
+
+								resultBox[UNIGRAMS][item.term] = resultBox[UNIGRAMS][item.term]
+										+ item.tfidf;
+							} else {
+
+								resultBox[UNIGRAMS][item.term] = item.tfidf;
+							}
+						}
+					});
+}
+
+function updateResults(tfidf, language, docIndex, text, resultBox) {
+
+	console.log("\nTweet: " + text);
+
+	updateEntities(getEntities(text, HASHTAGS), resultBox, HASHTAGS);
+	updateEntities(getEntities(text, RETWEETS), resultBox, RETWEETS);
+	updateEntities(getEntities(text, MENTIONS), resultBox, MENTIONS);
+	updateEntities(getEntities(text, URLS), resultBox, URLS);
+
+	if (resultBox[RETWEETS].length == 1) {
+
+		if (resultBox[MENTIONS].length > 0) {
+
+			resultBox[MENTIONS].shift();
+		}
 	}
 
-	if (urls.length > 0) {
-
-		console.log("Tweet mentioned urls: " + urls);
-	}
+	updateUnigrams(tfidf, language, docIndex, resultBox);
+	// updateBigrams(tfidf, language, docIndex, resultBox);
+	// updateTrigrams(tfidf, language, docIndex, resultBox);
 }
 
 function callTweetSearch(method, options, credentialIndex, response, docIndex,
-		wordOccurrences, tweetAmount) {
+		resultBox, tweetAmount) {
 
 	console.log("call " + method + " with options " + JSON.stringify(options)
 			+ ", credentials index =  " + credentialIndex + " and doc index "
@@ -182,8 +221,7 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 
 									callTweetSearch(method, options,
 											credentialIndex, response,
-											docIndex, wordOccurrences,
-											tweetAmount);
+											docIndex, resultBox, tweetAmount);
 
 								} else {
 									console.log("All credentials used");
@@ -199,12 +237,11 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 									+ credentialsUser);
 
 							var tweetsInfo = [];
-
 							var tweets = data.statuses;
 
 							if (tweets.length == 0) {
 
-								sendResponse(wordOccurrences, response);
+								sendResponse(resultBox, response);
 
 							} else {
 
@@ -224,8 +261,6 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 
 									var text = tweets[tweetIndex].text;
 
-									logTweetInfo(text);
-
 									tweetsInfo.push({
 										id : stringId,
 										date : createdAt,
@@ -233,25 +268,12 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 									});
 
 									tfidf.addDocument(text);
+
 									var currentDocIndex = parseInt(docIndex)
 											+ parseInt(tweetIndex);
-									tfidf
-											.listTerms(currentDocIndex)
-											.forEach(
 
-													function(item) {
-
-														if (!isStopword(
-																item.term,
-																options.lang)) {
-															if (wordOccurrences[item.term]) {
-																wordOccurrences[item.term] = wordOccurrences[item.term]
-																		+ item.tfidf;
-															} else {
-																wordOccurrences[item.term] = item.tfidf;
-															}
-														}
-													});
+									updateResults(tfidf, options.lang,
+											currentDocIndex, text, resultBox);
 								}
 
 								var amount = tweetsInfo.length;
@@ -265,10 +287,10 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 
 									callTweetSearch(method, options,
 											credentialIndex, response,
-											newDocIndex, wordOccurrences,
-											tweetAmount);
+											newDocIndex, resultBox, tweetAmount);
 								} else {
-									sendResponse(wordOccurrences, response);
+
+									sendResponse(resultBox, response);
 								}
 							}
 						}
@@ -291,7 +313,18 @@ exports.searchTweets = function(req, res) {
 	};
 
 	tfidf = new TfIdf();
-	callTweetSearch(method, options, 0, res, 0, {}, tweetAmount);
+	var emptyResultBox = {
+
+		HASHTAGS : [],
+		RETWEETS : [],
+		MENTIONS : [],
+		URLS : [],
+		UNIGRAMS : [],
+		BIGRAMS : [],
+		TRIGRAMS : []
+	};
+
+	callTweetSearch(method, options, 0, res, 0, emptyResultBox, tweetAmount);
 };
 
 function call(method, options, credentialIndex, response) {
