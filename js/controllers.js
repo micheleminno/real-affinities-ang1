@@ -595,8 +595,6 @@ var mainController = controllers
 var interestsController = controllers.controller("InterestsCtrl", function(
 		$scope, $http, $location, TwitterService, ElasticsearchService) {
 
-	$scope.addInterestActive = false;
-
 	$scope.showInterests = function() {
 
 		$scope.loading = true;
@@ -610,7 +608,7 @@ var interestsController = controllers.controller("InterestsCtrl", function(
 
 	$scope.addInterest = function() {
 
-		if (!$scope.addInterestActive || $scope.insertedInterestName == ''
+		if ($scope.insertedInterestName == ''
 				|| $scope.insertedInterestQuery == '') {
 
 			return;
