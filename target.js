@@ -45,7 +45,7 @@ exports.add = function(req, res) {
 			connection.query(query, function(err, rows) {
 
 				if (err) {
-					console.log("Problem with MySQL" + err);
+					console.log("MySQL " + err);
 				} else {
 					if (rows.affectedRows > 0) {
 

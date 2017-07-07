@@ -1,5 +1,6 @@
 var Twit = require('twit');
 var fs = require("fs");
+var async = require("async");
 
 var OK = 200;
 
@@ -31,7 +32,8 @@ exports.interesting = function(req, res) {
 	});
 };
 
-var userAccounts = JSON.parse(fs.readFileSync("./twitter-accounts.json", "utf8"));
+var userAccounts = JSON.parse(fs
+		.readFileSync("./twitter-accounts.json", "utf8"));
 
 var relationTypes = [ 'followers', 'friends' ];
 var result = {};
@@ -46,7 +48,7 @@ function getTwitter(userIndex) {
 	});
 };
 
-function updateAffinityValues(connection, ids, relationType, add) {
+function updateAffinityValues(connection, ids, relationType, add, callback) {
 
 	var followsIncrement = 0;
 	var followedByIncrement = 0;
@@ -54,7 +56,7 @@ function updateAffinityValues(connection, ids, relationType, add) {
 	var initialFollowedByValue = 0;
 
 	if (add) {
-		
+
 		if (relationType == "followers") {
 
 			initialFollowsValue++;
@@ -77,11 +79,12 @@ function updateAffinityValues(connection, ids, relationType, add) {
 		}
 	}
 
-	for ( var idIndex in ids) {
+	console.log(ids.length + " ids to update with relation type "
+			+ relationType);
 
-		var currentId = ids[idIndex];
+	async.each(ids, function(id, done) {
 
-		var query = "INSERT INTO affinity VALUES (" + currentId + ", "
+		var query = "INSERT INTO affinity VALUES (" + id + ", "
 				+ initialFollowsValue + ", " + initialFollowedByValue
 				+ ") ON DUPLICATE KEY UPDATE " + "follows = follows + "
 				+ followsIncrement + ", followed_by = followed_by + "
@@ -90,10 +93,25 @@ function updateAffinityValues(connection, ids, relationType, add) {
 		connection.query(query, function(err, rows) {
 
 			if (err) {
-				console.log("Problem with MySQL" + err);
+
+				console.log("MySQL " + err);
 			}
+
+			done(null);
 		});
-	}
+	}, function(err) {
+
+		if (err) {
+
+			console.log('A query failed to be executed');
+
+		} else {
+
+			console.log("All ids with relation type " + relationType
+					+ " updated");
+			callback();
+		}
+	});
 };
 
 function sendResult(userId, nextPage, cursor, relationType, callback) {
@@ -108,13 +126,19 @@ function sendResult(userId, nextPage, cursor, relationType, callback) {
 	if (Object.keys(result["followers"]).length > 0
 			&& Object.keys(result["friends"]).length > 0) {
 
-		console.log("All results fetched, calling callback function");
+		console.log("All results fetched for user " + userId
+				+ ", calling callback function");
 		callback(result);
 	}
 };
 
 function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 		credentialsIndex, relationType, add, connection, callback) {
+
+	console.log("\nrelationType: " + relationType);
+	console.log("nextPage: " + nextPage);
+	console.log("lastPageToFetch: " + lastPageToFetch);
+	console.log("cursor: " + cursor);
 
 	if (nextPage <= lastPageToFetch && cursor != 0) {
 
@@ -141,26 +165,80 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 
 							if (remainingCalls > 0) {
 
-								twitter.get(relationType + '/ids', {
-									user_id : userId,
-									cursor : cursor
-								}, function(err, data, response) {
+								twitter
+										.get(
+												relationType + '/ids',
+												{
+													user_id : userId,
+													cursor : cursor
+												},
+												function(err, data, response) {
 
-									cursor = data.next_cursor;
+													if (err) {
 
-									updateAffinityValues(connection, data.ids,
-											relationType, add);
+														console
+																.log("Error: "
+																		+ JSON
+																				.stringify(err));
+														console
+																.log("Affinities not updated for user: "
+																		+ userId
+																		+ ", page: "
+																		+ nextPage);
 
-									console.log('Page n. ' + nextPage + ' - '
-											+ nextPage * 5000 + ' '
-											+ relationType + ' ids of user '
-											+ userId + ' retrieved');
+														return updateAffinities(
+																userId,
+																nextPage,
+																lastPageToFetch,
+																cursor,
+																credentialsIndex,
+																relationType,
+																add,
+																connection,
+																callback);
+													} else {
 
-									return updateAffinities(userId, ++nextPage,
-											lastPageToFetch, cursor,
-											credentialsIndex, relationType,
-											add, connection, callback);
-								});
+														cursor = data.next_cursor;
+
+														updateAffinityValues(
+																connection,
+																data.ids,
+																relationType,
+																add,
+																function() {
+
+																	console
+																			.log("Affinities updated for user: "
+																					+ userId
+																					+ ", page: "
+																					+ nextPage);
+
+																	console
+																			.log('Page n. '
+																					+ nextPage
+																					+ ' - '
+																					+ nextPage
+																					* 5000
+																					+ ' '
+																					+ relationType
+																					+ ' ids of user '
+																					+ userId
+																					+ ' retrieved');
+
+																	return updateAffinities(
+																			userId,
+																			++nextPage,
+																			lastPageToFetch,
+																			cursor,
+																			credentialsIndex,
+																			relationType,
+																			add,
+																			connection,
+																			callback);
+																});
+
+													}
+												});
 							} else {
 
 								console
@@ -198,7 +276,8 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 	} else {
 
 		console.log("All requested data fetched for relation type "
-				+ relationType);
+				+ relationType + " and user " + userId);
+
 		sendResult(userId, nextPage, cursor, relationType, callback);
 	}
 };
