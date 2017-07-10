@@ -202,7 +202,7 @@ var mainController = controllers
 						if ($scope.interests == 0) {
 
 							$scope.loading = false;
-							
+
 						} else {
 
 							var requests = 0;
@@ -486,11 +486,12 @@ var mainController = controllers
 								.then(
 										function(tweetsInfo) {
 
-											if (tweetsInfo.length == 0) {
+											if (tweetsInfo[0].length == 0) {
 
 												$scope.loading = false;
 
-												alert("No tweets found!");
+												alert("No tweets found for user "
+														+ $scope.potentialAccount);
 
 											} else {
 
