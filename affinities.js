@@ -124,8 +124,7 @@ function sendResult(userId, nextPage, cursor, relationType, callback) {
 	if (Object.keys(result["followers"]).length > 0
 			&& Object.keys(result["friends"]).length > 0) {
 
-		console.log("All results fetched for user " + userId
-				+ ", calling callback function");
+		console.log("\nAll results fetched for user " + userId);
 		callback(result);
 	}
 };

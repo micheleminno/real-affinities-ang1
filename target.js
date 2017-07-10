@@ -34,8 +34,7 @@ exports.add = function(req, res) {
 		affinities.add(connection, userId, function(data) {
 
 			console.log("Affinities added for user " + userId);
-			console.log(JSON.stringify(data));
-
+			
 			var query = "INSERT IGNORE INTO target VALUES (" + userId + ", "
 					+ data["followers"]["page"] + ", "
 					+ data["friends"]["page"] + ", "
