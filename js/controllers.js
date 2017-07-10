@@ -199,45 +199,53 @@ var mainController = controllers
 							profiles[profileIndex].interests = [];
 						}
 
-						var requests = 0;
+						if ($scope.interests == 0) {
 
-						$scope.interests
-								.forEach(function(interest) {
+							$scope.loading = false;
+							
+						} else {
 
-									requests++;
+							var requests = 0;
 
-									ElasticsearchService
-											.getProfilesMatchingInterest(
-													interest.name)
-											.then(
-													function(matchingProfiles) {
+							$scope.interests
+									.forEach(function(interest) {
 
-														requests--;
-														if (requests == 0) {
+										requests++;
 
-															$scope.loading = false;
-														}
+										ElasticsearchService
+												.getProfilesMatchingInterest(
+														interest.name)
+												.then(
+														function(
+																matchingProfiles) {
 
-														var matchingProfilesIds = [];
-														for (matchingProfileIndex in matchingProfiles) {
+															requests--;
+															if (requests == 0) {
 
-															matchingProfilesIds
-																	.push(parseInt(matchingProfiles[matchingProfileIndex].id));
-														}
+																$scope.loading = false;
+															}
 
-														profiles
-																.forEach(function(
-																		profile) {
+															var matchingProfilesIds = [];
+															for (matchingProfileIndex in matchingProfiles) {
 
-																	if (matchingProfilesIds
-																			.indexOf(profile.id) > -1) {
+																matchingProfilesIds
+																		.push(parseInt(matchingProfiles[matchingProfileIndex].id));
+															}
 
-																		profile.interests
-																				.push(interest.name);
-																	}
-																});
-													});
-								});
+															profiles
+																	.forEach(function(
+																			profile) {
+
+																		if (matchingProfilesIds
+																				.indexOf(profile.id) > -1) {
+
+																			profile.interests
+																					.push(interest.name);
+																		}
+																	});
+														});
+									});
+						}
 					};
 
 					$scope.showInterestingAccounts = function() {
