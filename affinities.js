@@ -107,8 +107,6 @@ function updateAffinityValues(connection, ids, relationType, add, callback) {
 
 		} else {
 
-			console.log("All ids with relation type " + relationType
-					+ " updated");
 			callback();
 		}
 	});
@@ -135,11 +133,6 @@ function sendResult(userId, nextPage, cursor, relationType, callback) {
 function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 		credentialsIndex, relationType, add, connection, callback) {
 
-	console.log("\nrelationType: " + relationType);
-	console.log("nextPage: " + nextPage);
-	console.log("lastPageToFetch: " + lastPageToFetch);
-	console.log("cursor: " + cursor);
-
 	if (nextPage <= lastPageToFetch && cursor != 0) {
 
 		var twitter = getTwitter(credentialsIndex);
@@ -157,7 +150,8 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 							var resetDate = results['reset'];
 
 							console
-									.log(remainingCalls
+									.log('\n'
+											+ remainingCalls
 											+ ' calls to /'
 											+ relationType
 											+ '/ids remaining for credentials of '
@@ -208,7 +202,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 																function() {
 
 																	console
-																			.log("Affinities updated for user: "
+																			.log("\nAffinities updated for user: "
 																					+ userId
 																					+ ", page: "
 																					+ nextPage);
@@ -242,7 +236,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 							} else {
 
 								console
-										.log('Rate limits reached for call /'
+										.log('\nRate limits reached for call /'
 												+ relationType
 												+ '/ids and credentials of '
 												+ userAccounts[credentialsIndex]["screenName"]);
@@ -265,7 +259,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 								} else {
 
 									console
-											.log("All credentials exploited for relation type "
+											.log("\nAll credentials exploited for relation type "
 													+ relationType);
 									sendResult(userId, nextPage, cursor,
 											relationType, callback);
@@ -275,7 +269,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 
 	} else {
 
-		console.log("All requested data fetched for relation type "
+		console.log("\nAll requested data fetched for relation type "
 				+ relationType + " and user " + userId);
 
 		sendResult(userId, nextPage, cursor, relationType, callback);
