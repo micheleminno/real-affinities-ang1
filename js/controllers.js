@@ -16,7 +16,6 @@ var mainController = controllers
 
 						if (profile["inTarget"]) {
 
-							// remove from target
 							MysqlService.removeFromTarget(profile.id).then(
 									function(removed) {
 
@@ -28,7 +27,6 @@ var mainController = controllers
 									});
 						} else {
 
-							// add into target
 							MysqlService.addToTarget(profile.id)
 									.then(
 											function(added) {
@@ -60,6 +58,7 @@ var mainController = controllers
 
 											if (targetUserIds.length == 0) {
 
+												$scope.profileList = [];
 												$scope.loading = false;
 
 											} else {
