@@ -258,7 +258,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 								credentialsIndex++;
 								if (credentialsIndex < userAccounts.length) {
 
-									return updateAffinities(userId, ++nextPage,
+									return updateAffinities(userId, nextPage,
 											lastPageToFetch, cursor,
 											credentialsIndex, relationType,
 											add, connection, callback);
