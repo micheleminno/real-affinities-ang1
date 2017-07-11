@@ -6,20 +6,17 @@ var bigInt = require("big-integer");
 
 var natural = require('natural');
 var TfIdf = natural.TfIdf, tfidf;
-var NGrams = natural.NGrams;
 
 var OK = 200;
 var ERROR = 400;
 var TOO_MANY_REQUESTS = 429;
 
-var HASHTAGS_REGEXP = /(?:^|\W)#(\w+)(?!\w)/g;
-var MENTIONS_REGEXP = /(?:^|\W)@(\w+)(?!\w)/g;
-var URLS_REGEXP = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 var NUMBERS_REGEXP = /\b(\d+)\b/g;
 
 var HASHTAGS = 'hashtags';
 var TEXT = 'text';
 var USER_MENTIONS = 'user_mentions';
+var USER = 'user';
 var SCREEN_NAME = 'screen_name';
 var URLS = 'urls';
 var URL = 'url';
@@ -29,16 +26,12 @@ var RETWEET_COUNT = 'retweet_count';
 var RETWEETED_STATUS = 'retweeted_status';
 
 var UNIGRAMS = 'unigrams';
-var BIGRAMS = 'bigrams';
-var TRIGRAMS = 'trigrams';
 
 var HASHTAGS_AMOUNT = 20;
 var MENTIONS_AMOUNT = 10;
 var URLS_AMOUNT = 3;
 var RETWEETS_AMOUNT = 3;
 var UNIGRAMS_AMOUNT = 100;
-var BIGRAMS_AMOUNT = 20;
-var TRIGRAMS_AMOUNT = 20;
 
 var userAccounts = JSON.parse(fs
 		.readFileSync("./twitter-accounts.json", "utf8"));
@@ -82,15 +75,8 @@ function sendResponse(resultBox, response) {
 	console.log("\n\n*******" + UNIGRAMS + "*******\n");
 	var unigramsText = getText(resultBox[UNIGRAMS], UNIGRAMS_AMOUNT);
 
-	console.log("\n\n*******" + BIGRAMS + "*******\n");
-	var bigramsText = getText(resultBox[BIGRAMS], BIGRAMS_AMOUNT);
-
-	console.log("\n\n*******" + TRIGRAMS + "*******\n");
-	var trigramsText = getText(resultBox[TRIGRAMS], TRIGRAMS_AMOUNT);
-
 	var text = hashtagsText + " " + mentionsText + " " + retweetsText + " "
-			+ urlsText + " " + unigramsText + " " + bigramsText + " "
-			+ trigramsText;
+			+ urlsText + " " + unigramsText;
 
 	console.log("\nResult: " + text);
 
@@ -131,6 +117,23 @@ function isStopword(word, lang) {
 };
 
 function updateEntities(tweet, resultBox) {
+
+	if (tweet[RETWEETED_STATUS]) {
+
+		console.log("\nIt's a retweet from: "
+				+ tweet[RETWEETED_STATUS][USER][SCREEN_NAME]);
+
+		tweet = tweet[RETWEETED_STATUS];
+
+		if (resultBox[RETWEETS][tweet[TEXT]]) {
+
+			resultBox[RETWEETS][tweet[TEXT]]++;
+
+		} else {
+
+			resultBox[RETWEETS][tweet[TEXT]] = 1;
+		}
+	}
 
 	var resultText = tweet.text;
 	var entitiesIndices = {};
@@ -213,8 +216,6 @@ function updateEntities(tweet, resultBox) {
 		offset += endIndex - startIndex;
 	}
 
-	//console.log("\n\nCollected entities: " + JSON.stringify(resultBox));
-
 	return resultText;
 }
 
@@ -240,21 +241,6 @@ function updateUnigrams(tfidf, language, docIndex, resultBox) {
 					});
 }
 
-function getNGrams(text, label) {
-
-	var result = [];
-
-	if (label === BIGRAMS) {
-
-		result = NGrams.bigrams(text);
-	} else if (label === TRIGRAMS) {
-
-		result = NGrams.trigrams(text);
-	}
-
-	return result;
-}
-
 function updateResults(tfidf, language, docIndex, tweet, resultBox) {
 
 	console.log("\n\nTweet text: " + tweet.text);
@@ -269,8 +255,6 @@ function updateResults(tfidf, language, docIndex, tweet, resultBox) {
 	console.log("\nAdded text: " + text);
 
 	updateUnigrams(tfidf, language, docIndex, resultBox);
-	// updateEntities(getNGrams(text, BIGRAMS), resultBox, text, BIGRAMS);
-	// updateEntities(getNGrams(text, TRIGRAMS), resultBox, text, TRIGRAMS);
 }
 
 function callTweetSearch(method, options, credentialIndex, response, docIndex,
