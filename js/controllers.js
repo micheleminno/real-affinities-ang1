@@ -477,6 +477,7 @@ var mainController = controllers
 
 							return;
 						}
+						
 						$scope.loading = true;
 
 						$scope.potentialAccount = $scope.insertedPotentialAccount;

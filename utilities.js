@@ -20,3 +20,8 @@ exports.checkUrl = function(req, res) {
 		}
 	});
 };
+
+String.prototype.deleteSubstring = function(indices) {
+
+	return this.substring(0, indices[0]) + this.substring(indices[1]);
+};

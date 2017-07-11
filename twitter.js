@@ -1,3 +1,5 @@
+var utilities = require('./utilities.js');
+
 var Twit = require('twit');
 var fs = require("fs");
 var bigInt = require("big-integer");
@@ -15,13 +17,20 @@ var MENTIONS_REGEXP = /(?:^|\W)@(\w+)(?!\w)/g;
 var URLS_REGEXP = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 var NUMBERS_REGEXP = /\b(\d+)\b/g;
 
-var HASHTAGS = 'HASHTAGS';
-var MENTIONS = 'MENTIONS';
-var URLS = 'URLS';
-var RETWEETS = 'RETWEETS';
-var UNIGRAMS = 'UNIGRAMS';
-var BIGRAMS = 'BIGRAMS';
-var TRIGRAMS = 'TRIGRAMS';
+var HASHTAGS = 'hashtags';
+var TEXT = 'text';
+var USER_MENTIONS = 'user_mentions';
+var SCREEN_NAME = 'screen_name';
+var URLS = 'urls';
+var URL = 'url';
+var EXPANDED_URL = 'expanded_url';
+var RETWEETS = 'retweets';
+var RETWEET_COUNT = 'retweet_count';
+var RETWEETED_STATUS = 'retweeted_status';
+
+var UNIGRAMS = 'unigrams';
+var BIGRAMS = 'bigrams';
+var TRIGRAMS = 'trigrams';
 
 var HASHTAGS_AMOUNT = 20;
 var MENTIONS_AMOUNT = 10;
@@ -61,8 +70,8 @@ function sendResponse(resultBox, response) {
 	console.log("\n\n*******" + HASHTAGS + "*******\n");
 	var hashtagsText = getText(resultBox[HASHTAGS], HASHTAGS_AMOUNT);
 
-	console.log("\n\n*******" + MENTIONS + "*******\n");
-	var mentionsText = getText(resultBox[MENTIONS], MENTIONS_AMOUNT);
+	console.log("\n\n*******" + USER_MENTIONS + "*******\n");
+	var mentionsText = getText(resultBox[USER_MENTIONS], MENTIONS_AMOUNT);
 
 	console.log("\n\n*******" + RETWEETS + "*******\n");
 	var retweetsText = getText(resultBox[RETWEETS], RETWEETS_AMOUNT);
@@ -121,53 +130,92 @@ function isStopword(word, lang) {
 	return false;
 };
 
-function getEntities(text, label) {
+function updateEntities(tweet, resultBox) {
 
-	var match, matches = [];
+	var resultText = tweet.text;
+	var entitiesIndices = {};
 
-	if (label === RETWEETS) {
+	// Hashtags
 
-		if (text.indexOf('RT') === 0) {
+	tweet.entities.hashtags.forEach(
 
-			var user = text.substring(3, text.indexOf(':'));
-			if (user.indexOf('@') === 0) {
-				user = user.substring(1);
-			}
+	function(hashtag) {
 
-			matches.push(user);
-		}
-	} else {
+		console.log("\nHashtag: " + hashtag[TEXT]);
 
-		var regExp = eval(label + "_REGEXP");
-		while (match = regExp.exec(text)) {
-			matches.push(match[1]);
-		}
-	}
+		if (resultBox[HASHTAGS][hashtag[TEXT]]) {
 
-	return matches;
-}
-
-function updateEntities(newElements, resultBox, text, label) {
-
-	// console.log(label + ": " + newElements);
-
-	newElements.forEach(
-
-	function(item) {
-
-		if (resultBox[label][item]) {
-
-			resultBox[label][item]++;
+			resultBox[HASHTAGS][hashtag[TEXT]]++;
 
 		} else {
 
-			resultBox[label][item] = 1;
+			resultBox[HASHTAGS][hashtag[TEXT]] = 1;
 		}
 
-		text = text.replace(new RegExp(item, "g"), '');
+		var startIndex = hashtag['indices'][0];
+		var endIndex = hashtag['indices'][1];
+		entitiesIndices[startIndex] = endIndex;
 	});
 
-	return text;
+	// User mentions
+
+	tweet.entities.user_mentions.forEach(
+
+	function(userMention) {
+
+		console.log("\nUser mention: " + userMention[SCREEN_NAME]);
+
+		if (resultBox[USER_MENTIONS][userMention[SCREEN_NAME]]) {
+
+			resultBox[USER_MENTIONS][userMention[SCREEN_NAME]]++;
+
+		} else {
+
+			resultBox[USER_MENTIONS][userMention[SCREEN_NAME]] = 1;
+		}
+
+		var startIndex = userMention['indices'][0];
+		var endIndex = userMention['indices'][1];
+		entitiesIndices[startIndex] = endIndex;
+	});
+
+	// Urls
+
+	tweet.entities.urls
+			.forEach(
+
+			function(url) {
+
+				console.log("\nUrl: " + url[URL] + " - expanded: "
+						+ url[EXPANDED_URL]);
+
+				if (resultBox[URLS][url[EXPANDED_URL]]) {
+
+					resultBox[URLS][url[EXPANDED_URL]]++;
+
+				} else {
+
+					resultBox[URLS][url[EXPANDED_URL]] = 1;
+				}
+
+				var startIndex = url['indices'][0];
+				var endIndex = url['indices'][1];
+				entitiesIndices[startIndex] = endIndex;
+			});
+
+	var offset = 0;
+
+	for ( var startIndex in entitiesIndices) {
+
+		var endIndex = entitiesIndices[startIndex];
+		var newIndices = [ startIndex - offset, endIndex - offset ];
+		resultText = resultText.deleteSubstring(newIndices);
+		offset += endIndex - startIndex;
+	}
+
+	//console.log("\n\nCollected entities: " + JSON.stringify(resultBox));
+
+	return resultText;
 }
 
 function updateUnigrams(tfidf, language, docIndex, resultBox) {
@@ -207,36 +255,22 @@ function getNGrams(text, label) {
 	return result;
 }
 
-function updateResults(tfidf, language, docIndex, text, resultBox) {
+function updateResults(tfidf, language, docIndex, tweet, resultBox) {
 
-	console.log("\nTweet: " + text);
+	console.log("\n\nTweet text: " + tweet.text);
 
-	text = updateEntities(getEntities(text, HASHTAGS), resultBox, text,
-			HASHTAGS);
+	// remove entities and update them
+	var text = updateEntities(tweet, resultBox);
 
-	text = updateEntities(getEntities(text, RETWEETS), resultBox, text,
-			RETWEETS);
-
-	text = updateEntities(getEntities(text, MENTIONS), resultBox, text,
-			MENTIONS);
-
-	text = updateEntities(getEntities(text, URLS), resultBox, text, URLS);
-
-	if (resultBox[RETWEETS].length == 1) {
-
-		if (resultBox[MENTIONS].length > 0) {
-
-			resultBox[MENTIONS].shift();
-		}
-	}
-
+	// remove numbers
 	text = text.replace(NUMBERS_REGEXP, '');
 
 	tfidf.addDocument(text);
+	console.log("\nAdded text: " + text);
 
 	updateUnigrams(tfidf, language, docIndex, resultBox);
-	//updateEntities(getNGrams(text, BIGRAMS), resultBox, text, BIGRAMS);
-	//updateEntities(getNGrams(text, TRIGRAMS), resultBox, text, TRIGRAMS);
+	// updateEntities(getNGrams(text, BIGRAMS), resultBox, text, BIGRAMS);
+	// updateEntities(getNGrams(text, TRIGRAMS), resultBox, text, TRIGRAMS);
 }
 
 function callTweetSearch(method, options, credentialIndex, response, docIndex,
@@ -284,7 +318,6 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 									+ " done with credentials of "
 									+ credentialsUser);
 
-							var tweetsInfo = [];
 							var tweets = data.statuses;
 
 							if (tweets.length == 0) {
@@ -299,7 +332,6 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 
 								for (tweetIndex in tweets) {
 
-									var createdAt = tweets[tweetIndex].created_at;
 									var stringId = tweets[tweetIndex].id_str;
 
 									var id = bigInt(stringId);
@@ -307,22 +339,15 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 										minId = id;
 									}
 
-									var text = tweets[tweetIndex].text;
-
-									tweetsInfo.push({
-										id : stringId,
-										date : createdAt,
-										text : text
-									});
-
 									var currentDocIndex = parseInt(docIndex)
 											+ parseInt(tweetIndex);
 
 									updateResults(tfidf, options.lang,
-											currentDocIndex, text, resultBox);
+											currentDocIndex,
+											tweets[tweetIndex], resultBox);
 								}
 
-								var amount = tweetsInfo.length;
+								var amount = tweets.length;
 
 								newDocIndex = docIndex + amount;
 
@@ -361,13 +386,13 @@ exports.searchTweets = function(req, res) {
 	tfidf = new TfIdf();
 	var emptyResultBox = {
 
-		HASHTAGS : [],
-		RETWEETS : [],
-		MENTIONS : [],
-		URLS : [],
-		UNIGRAMS : [],
-		BIGRAMS : [],
-		TRIGRAMS : []
+		hashtags : {},
+		retweets : {},
+		user_mentions : {},
+		urls : {},
+		unigrams : {},
+		bigrams : {},
+		trigrams : {}
 	};
 
 	callTweetSearch(method, options, 0, res, 0, emptyResultBox, tweetAmount);
