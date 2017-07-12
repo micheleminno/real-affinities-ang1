@@ -120,9 +120,6 @@ function updateEntities(tweet, resultBox) {
 
 	if (tweet[RETWEETED_STATUS]) {
 
-		console.log("\nIt's a retweet from: "
-				+ tweet[RETWEETED_STATUS][USER][SCREEN_NAME]);
-
 		tweet = tweet[RETWEETED_STATUS];
 
 		if (resultBox[RETWEETS][tweet[TEXT]]) {
@@ -144,8 +141,6 @@ function updateEntities(tweet, resultBox) {
 
 	function(hashtag) {
 
-		console.log("\nHashtag: " + hashtag[TEXT]);
-
 		if (resultBox[HASHTAGS][hashtag[TEXT]]) {
 
 			resultBox[HASHTAGS][hashtag[TEXT]]++;
@@ -166,8 +161,6 @@ function updateEntities(tweet, resultBox) {
 
 	function(userMention) {
 
-		console.log("\nUser mention: " + userMention[SCREEN_NAME]);
-
 		if (resultBox[USER_MENTIONS][userMention[SCREEN_NAME]]) {
 
 			resultBox[USER_MENTIONS][userMention[SCREEN_NAME]]++;
@@ -184,27 +177,23 @@ function updateEntities(tweet, resultBox) {
 
 	// Urls
 
-	tweet.entities.urls
-			.forEach(
+	tweet.entities.urls.forEach(
 
-			function(url) {
+	function(url) {
 
-				console.log("\nUrl: " + url[URL] + " - expanded: "
-						+ url[EXPANDED_URL]);
+		if (resultBox[URLS][url[EXPANDED_URL]]) {
 
-				if (resultBox[URLS][url[EXPANDED_URL]]) {
+			resultBox[URLS][url[EXPANDED_URL]]++;
 
-					resultBox[URLS][url[EXPANDED_URL]]++;
+		} else {
 
-				} else {
+			resultBox[URLS][url[EXPANDED_URL]] = 1;
+		}
 
-					resultBox[URLS][url[EXPANDED_URL]] = 1;
-				}
-
-				var startIndex = url['indices'][0];
-				var endIndex = url['indices'][1];
-				entitiesIndices[startIndex] = endIndex;
-			});
+		var startIndex = url['indices'][0];
+		var endIndex = url['indices'][1];
+		entitiesIndices[startIndex] = endIndex;
+	});
 
 	var offset = 0;
 
@@ -243,8 +232,6 @@ function updateUnigrams(tfidf, language, docIndex, resultBox) {
 
 function updateResults(tfidf, language, docIndex, tweet, resultBox) {
 
-	console.log("\n\nTweet text: " + tweet.text);
-
 	// remove entities and update them
 	var text = updateEntities(tweet, resultBox);
 
@@ -252,17 +239,13 @@ function updateResults(tfidf, language, docIndex, tweet, resultBox) {
 	text = text.replace(NUMBERS_REGEXP, '');
 
 	tfidf.addDocument(text);
-	console.log("\nAdded text: " + text);
-
 	updateUnigrams(tfidf, language, docIndex, resultBox);
 }
 
 function callTweetSearch(method, options, credentialIndex, response, docIndex,
 		resultBox, tweetAmount) {
 
-	console.log("call " + method + " with options " + JSON.stringify(options)
-			+ ", credentials index =  " + credentialIndex + " and doc index "
-			+ docIndex);
+	console.log(docIndex + " tweets found");
 
 	var twitter = getTwitter(credentialIndex);
 	twitter
@@ -298,10 +281,6 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 							}
 						} else {
 
-							console.log("Call " + method
-									+ " done with credentials of "
-									+ credentialsUser);
-
 							var tweets = data.statuses;
 
 							if (tweets.length == 0) {
@@ -312,7 +291,12 @@ function callTweetSearch(method, options, credentialIndex, response, docIndex,
 
 								var minId = bigInt(tweets[0].id_str);
 
-								console.log(tweets[0].created_at);
+								var firstTweetDate = tweets[0].created_at
+										.substring(4, 19);
+
+								console
+										.log("\nReached tweets written on date: "
+												+ firstTweetDate);
 
 								for (tweetIndex in tweets) {
 
