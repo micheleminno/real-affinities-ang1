@@ -1,6 +1,6 @@
 var Twit = require('twit');
-var fs = require("fs");
-var async = require("async");
+var fs = require('fs');
+var async = require('async');
 
 var OK = 200;
 
