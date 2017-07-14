@@ -56,7 +56,7 @@ app.get('/twitter/users', twitter.users);
 
 app.get('/utilities/url-exists', utilities.checkUrl);
 
-var server = app.listen(3000, function() {
+var server = app.listen(config.app.port, function() {
 
 	console.log("Listening to port %s", server.address().port);
 
