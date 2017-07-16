@@ -18,7 +18,7 @@ exports.list = function(req, res) {
 					ids.push(rows[rowIndex]["id"]);
 				}
 
-				res.status(OK).json('target', {
+				res.status(OK).json({
 					targetIds : ids
 				});
 			}
@@ -34,7 +34,7 @@ exports.add = function(req, res) {
 		affinities.add(connection, userId, function(data) {
 
 			console.log("Affinities added for user " + userId);
-			
+
 			var query = "INSERT IGNORE INTO target VALUES (" + userId + ", "
 					+ data["followers"]["page"] + ", "
 					+ data["friends"]["page"] + ", "
