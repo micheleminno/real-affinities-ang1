@@ -1,6 +1,6 @@
 var chakram = require('chakram'), expect = chakram.expect;
 
-var config = require('../config.js');
+var config = require('./../config.js');
 
 describe("Target", function() {
 
