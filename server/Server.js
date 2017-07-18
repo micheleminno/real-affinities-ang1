@@ -2,7 +2,7 @@ var express = require('express');
 var connection = require('express-myconnection');
 var mysql = require('mysql');
 
-var config = require('./config.js');
+var config = require('../config.js');
 var target = require('./target.js');
 var affinities = require('./affinities.js');
 var twitter = require('./twitter.js');
