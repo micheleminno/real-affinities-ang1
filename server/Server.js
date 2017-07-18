@@ -2,11 +2,11 @@ var express = require('express');
 var connection = require('express-myconnection');
 var mysql = require('mysql');
 
-var config = require('../config.js');
-var target = require('./target.js');
-var affinities = require('./affinities.js');
-var twitter = require('./twitter.js');
-var utilities = require('./utilities.js');
+var config = require('../config');
+var target = require('./target');
+var affinities = require('./affinities');
+var twitter = require('./twitter');
+var utilities = require('./utilities');
 
 
 app = express();

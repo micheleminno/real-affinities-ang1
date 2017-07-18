@@ -1,4 +1,4 @@
-var utilities = require('./utilities.js');
+var utilities = require('./utilities');
 
 var Twit = require('twit');
 var fs = require("fs");

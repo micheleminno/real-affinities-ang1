@@ -1,4 +1,4 @@
-var affinities = require('./affinities.js');
+var affinities = require('./affinities');
 
 var OK = 200;
 
