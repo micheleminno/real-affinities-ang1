@@ -4,4 +4,5 @@ twitter-accounts.json
 *.log
 .nyc_output/
 artifacts/
+.settings/
 
