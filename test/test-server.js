@@ -1,10 +1,10 @@
 var chakram = require('chakram'), expect = chakram.expect;
-
-var config = require('../config');
+var config = require('config');
 
 describe("Server", function() {
 
-	var serviceUrl = config.app.url + '/';
+	var serviceUrl = config.get('app.server') + ':' + config.get('app.port')
+			+ '/';
 
 	describe("get server response from " + serviceUrl, function() {
 

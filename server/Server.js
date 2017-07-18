@@ -1,13 +1,12 @@
 var express = require('express');
 var connection = require('express-myconnection');
 var mysql = require('mysql');
+var config = require('config');
 
-var config = require('../config');
 var target = require('./target');
 var affinities = require('./affinities');
 var twitter = require('./twitter');
 var utilities = require('./utilities');
-
 
 app = express();
 
@@ -25,14 +24,7 @@ var allowCrossDomain = function(req, res, next) {
 
 app.use(allowCrossDomain);
 
-var connectionConfig = {
-
-	host : config.mysql.host,
-	user : config.mysql.user,
-	password : config.mysql.password,
-	database : config.mysql.database
-};
-
+var connectionConfig = config.get('mysql');
 var connection = connection(mysql, connectionConfig, 'request');
 
 app.use(connection);

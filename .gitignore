@@ -1,5 +1,5 @@
 .DS_Store
-config.js
+default.json
 twitter-accounts.json
 *.log
 
