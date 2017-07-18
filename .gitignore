@@ -2,4 +2,6 @@
 default.json
 twitter-accounts.json
 *.log
+.nyc_output/
+artifacts/
 
