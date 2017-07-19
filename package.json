@@ -4,6 +4,7 @@
   "dependencies": {
     "async": "^2.5.0",
     "body-parser": "1.9.0",
+    "config": "^1.26.1",
     "ejs": "^1.0.0",
     "express": "4.9.5",
     "express-myconnection": "*",
@@ -13,9 +14,11 @@
   },
   "devDependencies": {
     "chakram": "^1.5.0",
-    "jenkins-mocha": "^4.1.2"
+    "jenkins-mocha": "^4.1.2",
+    "mocha-jenkins-reporter": "0.3.8"
   },
   "scripts": {
-    "test": "jenkins-mocha test/*"
+    "test": "jenkins-mocha test/*",
+    "test-jenkins": "JUNIT_REPORT_PATH=/report.xml mocha --colors --reporter mocha-jenkins-reporter"
   }
 }
