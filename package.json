@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "async": "^2.5.0",
+    "big-integer": "^1.6.23",
     "body-parser": "1.9.0",
     "config": "^1.26.1",
     "ejs": "^1.0.0",
@@ -10,6 +11,8 @@
     "express-myconnection": "*",
     "express-validator": "^2.6.0",
     "mysql": "*",
+    "natural": "^0.5.4",
+    "twit": "^2.2.9",
     "url-exists": "^1.0.3"
   },
   "devDependencies": {
