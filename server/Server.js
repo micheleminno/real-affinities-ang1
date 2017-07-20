@@ -8,7 +8,7 @@ var affinities = require('./affinities');
 var twitter = require('./twitter');
 var utilities = require('./utilities');
 
-app = express();
+var app = express();
 
 var allowCrossDomain = function(req, res, next) {
 
@@ -25,7 +25,7 @@ var allowCrossDomain = function(req, res, next) {
 app.use(allowCrossDomain);
 
 var connectionConfig = config.get('mysql');
-var connection = connection(mysql, connectionConfig, 'request');
+connection = connection(mysql, connectionConfig, 'request');
 
 app.use(connection);
 
