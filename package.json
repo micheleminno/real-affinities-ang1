@@ -12,6 +12,7 @@
     "express-validator": "^2.6.0",
     "mysql": "*",
     "natural": "^0.5.4",
+    "webworker-threads": "0.7.12",
     "twit": "^2.2.9",
     "url-exists": "^1.0.3"
   },
