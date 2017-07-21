@@ -16,15 +16,9 @@
     "url-exists": "^1.0.3"
   },
   "devDependencies": {
-    "chakram": "^1.5.0",
-    "istanbul": "^0.4.5",
-    "jenkins-mocha": "^4.1.2",
-    "mocha-istanbul": "^0.3.0",
-    "mocha-jenkins-reporter": "0.3.8",
-    "nyc": "^11.0.3"
+    "chakram": "^1.5.0"
   },
   "scripts": {
-    "test": "istanbul cover mocha -- -R tap 'test/*' && istanbul report clover",
-    "test-jenkins": "JUNIT_REPORT_PATH=/report.xml mocha --colors --reporter mocha-jenkins-reporter"
+    "test": "mocha"
   }
 }
