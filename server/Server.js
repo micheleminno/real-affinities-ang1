@@ -8,7 +8,7 @@ var affinities = require('./affinities');
 var twitter = require('./twitter');
 var utilities = require('./utilities');
 
-app = express();
+var app = express();
 
 var allowCrossDomain = function(req, res, next) {
 
@@ -25,9 +25,9 @@ var allowCrossDomain = function(req, res, next) {
 app.use(allowCrossDomain);
 
 var connectionConfig = config.get('mysql');
-var connection = connection(mysql, connectionConfig, 'request');
+var connectionInstance = connection(mysql, connectionConfig, 'request');
 
-app.use(connection);
+app.use(connectionInstance);
 
 app.get('/', function(req, res) {
 	res.send('Welcome');
@@ -48,8 +48,19 @@ app.get('/twitter/users', twitter.users);
 
 app.get('/utilities/url-exists', utilities.checkUrl);
 
-var server = app.listen(config.app.port, function() {
+var server = {};
+
+exports.listen = function () {
+  
+  server = app.listen(config.app.port, function() {
 
 	console.log("Listening to port %s", server.address().port);
 
-});
+    });
+};
+
+exports.close = function (callback) {
+  
+    server.close(callback);
+};
+

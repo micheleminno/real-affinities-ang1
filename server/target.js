@@ -6,7 +6,11 @@ exports.list = function(req, res) {
 
 	req.getConnection(function(err, connection) {
 
-		connection.query('SELECT id FROM target', function(err, rows) {
+        if (err) {
+				console.log("MySQL " + err);
+		} else {
+				
+		      connection.query('SELECT id FROM target', function(err, rows) {
 
 			if (err) {
 				console.log("Error Selecting : %s ", err);
@@ -22,7 +26,8 @@ exports.list = function(req, res) {
 					targetIds : ids
 				});
 			}
-		});
+		  });
+		}
 	});
 };
 
