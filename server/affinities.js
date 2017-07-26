@@ -46,7 +46,7 @@ function getTwitter(userIndex) {
 		access_token : userAccounts[userIndex]["token"],
 		access_token_secret : userAccounts[userIndex]["tokenSecret"],
 	});
-};
+}
 
 function updateAffinityValues(connection, ids, relationType, add, callback) {
 
@@ -57,23 +57,23 @@ function updateAffinityValues(connection, ids, relationType, add, callback) {
 
 	if (add) {
 
-		if (relationType == "followers") {
+		if (relationType === "followers") {
 
 			initialFollowsValue++;
 			followsIncrement++;
 
-		} else if (relationType == "friends") {
+		} else if (relationType === "friends") {
 
 			initialFollowedByValue++;
 			followedByIncrement++;
 		}
 	} else { // remove, initial values are 0
 
-		if (relationType == "followers") {
+		if (relationType === "followers") {
 
 			followsIncrement--;
 
-		} else if (relationType == "friends") {
+		} else if (relationType === "friends") {
 
 			followedByIncrement--;
 		}
@@ -110,7 +110,7 @@ function updateAffinityValues(connection, ids, relationType, add, callback) {
 			callback();
 		}
 	});
-};
+}
 
 function sendResult(userId, nextPage, cursor, relationType, callback) {
 
@@ -127,12 +127,12 @@ function sendResult(userId, nextPage, cursor, relationType, callback) {
 		console.log("\nAll results fetched for user " + userId);
 		callback(result);
 	}
-};
+}
 
 function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 		credentialsIndex, relationType, add, connection, callback) {
 
-	if (nextPage <= lastPageToFetch && cursor != 0) {
+	if (nextPage <= lastPageToFetch && cursor !== 0) {
 
 		var twitter = getTwitter(credentialsIndex);
 		twitter
@@ -145,16 +145,8 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 
 							var results = data.resources[relationType]['/'
 									+ relationType + '/ids'];
-							remainingCalls = results['remaining'];
+							var remainingCalls = results['remaining'];
 							var resetDate = results['reset'];
-
-							console
-									.log('\n'
-											+ remainingCalls
-											+ ' calls to /'
-											+ relationType
-											+ '/ids remaining for credentials of '
-											+ userAccounts[credentialsIndex]["screenName"]);
 
 							if (remainingCalls > 0) {
 
@@ -173,22 +165,32 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 																.log("Error: "
 																		+ JSON
 																				.stringify(err));
-														console
-																.log("Affinities not updated for user: "
-																		+ userId
-																		+ ", page: "
-																		+ nextPage);
-
-														return updateAffinities(
-																userId,
-																nextPage,
-																lastPageToFetch,
-																cursor,
-																credentialsIndex,
-																relationType,
-																add,
-																connection,
-																callback);
+														
+														if(err.code === 34) {
+														    
+														    //User id doesn't exist
+														    console.log("User with id " + userId + " doesn't exist");
+														    var result = {"userId": null};
+														    callback(result);
+														}
+														else {
+    														console
+    																.log("Affinities not updated for user: "
+    																		+ userId
+    																		+ ", page: "
+    																		+ nextPage);
+    
+    														return updateAffinities(
+    																userId,
+    																nextPage,
+    																lastPageToFetch,
+    																cursor,
+    																credentialsIndex,
+    																relationType,
+    																add,
+    																connection,
+    																callback);
+    												   }
 													} else {
 
 														cursor = data.next_cursor;
@@ -273,7 +275,9 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 
 		sendResult(userId, nextPage, cursor, relationType, callback);
 	}
-};
+}
+
+
 
 exports.add = function(connection, userId, callback) {
 

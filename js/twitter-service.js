@@ -21,6 +21,7 @@ app.service('TwitterService', function($q, $rootScope, $http, $route) {
 		var deferred = $q.defer();
 
 		var idsParam = ids.join();
+		
 		$http.get(twitterUrl + '/twitter/users?ids=' + idsParam).success(
 
 		function(data) {
@@ -30,7 +31,7 @@ app.service('TwitterService', function($q, $rootScope, $http, $route) {
 
 		return deferred.promise;
 	};
-
+	
 	this.getFollowing = function(screenName, cursor) {
 
 		// TODO
