@@ -1,43 +1,18 @@
 var chakram = require('chakram'), expect = chakram.expect;
+const request = require('supertest');
 var config = require('config');
+var express = require('express');
 
-var server = require('../server/Server.js');
-
-before(function () {
-       
-    server.listen();
-});
-
-after(function () {
-   
-   server.close();
-});
-    
+var app = require('../server/Server.js');
+			
 describe("Server", function() {
 
-	var serviceUrl = config.get('app.server') + ':' + config.get('app.port')
-			+ '/';
+		it("should respond", function(done) {
 
-	describe("get server response from " + serviceUrl, function() {
-
-		var apiResponse = {};
-
-		before(function() {
-
-			apiResponse = chakram.get(serviceUrl);
-			return apiResponse;
+			 request(app)
+                          .get('/')
+                          .set('Accept', /text/)
+                          .expect('Content-Type', /text/)
+                          .expect(200, done);
 		});
-
-		it("should return 200 on success", function() {
-
-			return expect(apiResponse).to.have.status(200);
-		});
-
-		it("should return content type header", function() {
-
-			expect(apiResponse).to.have.header("content-type", /text/);
-
-			return chakram.wait();
-		});
-	});
 });

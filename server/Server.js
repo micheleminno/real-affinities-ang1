@@ -48,19 +48,11 @@ app.get('/twitter/users', twitter.users);
 
 app.get('/utilities/url-exists', utilities.checkUrl);
 
+module.exports = app;
+
 var server = {};
 
-exports.listen = function () {
-  
-  server = app.listen(config.app.port, function() {
+server = app.listen(config.app.port, function() {
 
 	console.log("Listening to port %s", server.address().port);
-
-    });
-};
-
-exports.close = function (callback) {
-  
-    server.close(callback);
-};
-
+});
