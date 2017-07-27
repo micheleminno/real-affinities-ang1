@@ -1,5 +1,3 @@
-/*eslint-env mocha */
-var chakram = require('chakram'), expect = chakram.expect;
 const request = require('supertest');
 require('config');
 require('express');
@@ -11,13 +9,18 @@ var app = require('../server/Server.js');
 			
 describe("Target", function() {
 
-		it("should return the list of target ids", function(done) {
+		it("should return the empty list of target ids", function(done) {
 
 			 request(app)
                           .get('/target')
                           .set('Accept', /json/)
                           .expect('Content-Type', /json/)
-                          .expect(OK, done);
+                          .expect(OK, done)
+                          .expect({
+                                targetIds: []
+                          })
+                          .end(done);
+                          
 		});
 		
 		it("add an unexisting target id", function(done) {

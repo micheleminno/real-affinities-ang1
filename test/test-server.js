@@ -1,4 +1,4 @@
-var chakram = require('chakram'), expect = chakram.expect;
+
 const request = require('supertest');
 var config = require('config');
 var express = require('express');
