@@ -16,7 +16,7 @@
     "express-validator": "^3.2.1",
     "mysql": "^2.14.1",
     "twit": "^2.2.9",
-    "url-exists": "^1.0.3",
+    "url-exists": "^1.0.3"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
