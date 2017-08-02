@@ -32,7 +32,7 @@ exports.interesting = function(req, res) {
 	});
 };
 
-var userAccounts = process.env.twitter-accounts; 
+var userAccounts = process.env.accounts; 
 //JSON.parse(fs.readFileSync("./twitter-accounts.json", "utf8"));
 
 var relationTypes = [ 'followers', 'friends' ];
