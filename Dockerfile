@@ -1,4 +1,4 @@
-FROM nsdont/python-node:latest
+FROM sunnyone/python-node-latest
 
 EXPOSE 3000
 ENV NODE_ENV production
