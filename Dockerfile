@@ -1,9 +1,10 @@
-FROM mhart/alpine-node:latest
+FROM nsdont/python-node:latest
 
 EXPOSE 3000
 ENV NODE_ENV production
 RUN mkdir /app
 WORKDIR /app
+
 
 # add package.json and run npm install before adding the rest of the files
 # this way, you only run npm install when package.json changes

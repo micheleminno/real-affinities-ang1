@@ -2,7 +2,7 @@
 docker build -t micheleminno/app-node .
 docker push micheleminno/app-node
 
-ssh -i "MyServer.pem" deploy@ec2-18-220-103-149.us-east-2.compute.amazonaws.com << EOF
+ssh -i "~/.ssh/MyServer.pem" deploy@ec2-18-220-103-149.us-east-2.compute.amazonaws.com << EOF
 docker pull micheleminno/app-node:latest
 docker stop web || true
 docker rm web || true

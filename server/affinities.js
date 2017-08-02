@@ -32,8 +32,8 @@ exports.interesting = function(req, res) {
 	});
 };
 
-var userAccounts = JSON.parse(fs
-		.readFileSync("./twitter-accounts.json", "utf8"));
+var userAccounts = process.env.twitter-accounts; 
+//JSON.parse(fs.readFileSync("./twitter-accounts.json", "utf8"));
 
 var relationTypes = [ 'followers', 'friends' ];
 var result = {};
@@ -165,9 +165,9 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 																.log("Error: "
 																		+ JSON
 																				.stringify(err));
-														
+
 														if(err.code === 34) {
-														    
+
 														    //User id doesn't exist
 														    console.log("User with id " + userId + " doesn't exist");
 														    var result = {"userId": null};
@@ -179,7 +179,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
     																		+ userId
     																		+ ", page: "
     																		+ nextPage);
-    
+
     														return updateAffinities(
     																userId,
     																nextPage,
