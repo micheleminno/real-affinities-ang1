@@ -15,5 +15,4 @@ RUN npm install
 # add the rest of the files
 ADD . /app
 
-CMD ["npm", "install", "natural"]
-CMD ["node", "server/Server.js"]
+CMD ["npm", "install", "natural"] && ["node", "server/Server.js"]
