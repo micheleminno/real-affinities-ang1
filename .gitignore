@@ -1,8 +1,8 @@
 .DS_Store
 default.json
 twitter-accounts.json
+twitter-accounts.env
 *.log
 .nyc_output/
 artifacts/
 .settings/
-

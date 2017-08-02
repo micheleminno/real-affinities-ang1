@@ -4,11 +4,11 @@ machine:
 
 dependencies:
   override:
-    - docker build -t willrstern/sample-node .
+    - docker build -t micheleminno/app-node .
 
 test:
   override:
-    - docker run willrstern/sample-node npm test
+    - docker run micheleminno/app-node npm test
 
 deployment:
   production:
