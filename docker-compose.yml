@@ -2,7 +2,7 @@ version: "2"
 services:
   web:
     env_file:
-      - twitter-accounts.env
+      - accounts.env
     build:
       context: .
       dockerfile: Dockerfile.dev
