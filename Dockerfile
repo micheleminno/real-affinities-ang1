@@ -10,7 +10,8 @@ WORKDIR /app
 # this way, you only run npm install when package.json changes
 
 ADD package.json /app/package.json
-RUN npm install && npm install natural
+RUN npm install && \
+    npm install natural
 
 # add the rest of the files
 ADD . /app
