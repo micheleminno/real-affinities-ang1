@@ -1,11 +1,12 @@
 var affinities = require('./affinities');
+var db = require('./db');
 
 var OK = 200;
 var NOK = 404;
 
 exports.list = function(req, res) {
 
-	db.select('id')
+  db.select('id')
 		.from('users')
 		.then(function(rows) {
 
@@ -19,7 +20,7 @@ exports.list = function(req, res) {
 				targetIds : ids
 			});
 		})
-	  .catch(function(error) { console.error(error); });	
+	  .catch(function(error) { console.error(error); });
 };
 
 exports.add = function(req, res) {

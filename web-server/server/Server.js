@@ -1,18 +1,11 @@
 var express = require('express');
-var connection = require('express-myconnection');
-var mysql = require('mysql');
 
 var target = require('./target');
 var affinities = require('./affinities');
 var twitter = require('./twitter');
 var utilities = require('./utilities');
 
-var config = require("./../config");
-var db = require('knex')(config);
-
 var app = express();
-
-app.exports = db;
 
 var allowCrossDomain = function(req, res, next) {
 
@@ -46,8 +39,6 @@ app.get('/twitter/tweets', twitter.userTweets);
 app.get('/twitter/users', twitter.users);
 
 app.get('/utilities/url-exists', utilities.checkUrl);
-
-module.exports = app;
 
 var server = {};
 
