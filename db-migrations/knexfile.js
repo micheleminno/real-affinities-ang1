@@ -2,7 +2,7 @@ module.exports = {
   development: {
     client: "mysql",
     connection: {
-      database: "test",
+      database: "real-affinities-test",
       host:     "mysql",
       user:     "test",
       password: "test",
@@ -11,7 +11,7 @@ module.exports = {
   production: {
     client: "mysql",
     connection: {
-      database: "production",
+      database: "real-affinities",
       host:     "mysql",
       user:     "production",
       password: "production",

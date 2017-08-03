@@ -24,13 +24,13 @@ services:
     ports:
       - 3306:3306
   migrations:
-    image: micheleminno/test-db-migrations
+    image: micheleminno/db-migrations
     environment:
       - NODE_ENV=development
     depends_on:
       - mysql
   fixtures:
-    image: micheleminno/test-db-fixtures:latest
+    image: micheleminno/db-fixtures:latest
     environment:
       - NODE_ENV=development
     depends_on:
