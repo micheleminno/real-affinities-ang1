@@ -15,7 +15,6 @@
     "express-myconnection": "^1.0.4",
     "express-validator": "^3.2.1",
     "mysql": "^2.14.1",
-    "natural": "^0.5.4",
     "twit": "^2.2.9",
     "url-exists": "^1.0.3"
   },
