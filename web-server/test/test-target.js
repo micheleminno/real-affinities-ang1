@@ -1,12 +1,11 @@
 const request = require('supertest');
-require('config');
 require('express');
 
 var OK = 200;
 var NOK = 404;
 
 var app = require('../server/Server.js');
-			
+
 describe("Target", function() {
 
 		it("should return the empty list of target ids", function(done) {
@@ -20,9 +19,9 @@ describe("Target", function() {
                                 targetIds: []
                           })
                           .end(done);
-                          
+
 		});
-		
+
 		it("add an unexisting target id", function(done) {
 
 			 request(app)

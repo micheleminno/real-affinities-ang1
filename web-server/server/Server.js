@@ -1,14 +1,18 @@
 var express = require('express');
 var connection = require('express-myconnection');
 var mysql = require('mysql');
-var config = require('config');
 
 var target = require('./target');
 var affinities = require('./affinities');
 var twitter = require('./twitter');
 var utilities = require('./utilities');
 
+var config = require("./../config");
+var db = require('knex')(config);
+
 var app = express();
+
+app.exports = db;
 
 var allowCrossDomain = function(req, res, next) {
 
@@ -23,11 +27,6 @@ var allowCrossDomain = function(req, res, next) {
 };
 
 app.use(allowCrossDomain);
-
-var config = require("./config");
-var connectionInstance = connection(mysql, connectionConfig, 'request');
-
-app.use(connectionInstance);
 
 app.get('/', function(req, res) {
 	res.send('Welcome');
@@ -52,7 +51,7 @@ module.exports = app;
 
 var server = {};
 
-server = app.listen(config.app.port, function() {
+server = app.listen(3000, function() {
 
 	console.log("Listening to port %s", server.address().port);
 });

@@ -1,10 +1,9 @@
 
 const request = require('supertest');
-var config = require('config');
 var express = require('express');
 
 var app = require('../server/Server.js');
-			
+
 describe("Server", function() {
 
 		it("should respond", function(done) {
