@@ -10,6 +10,8 @@ WORKDIR /app
 # this way, you only run npm install when package.json changes
 
 ADD /web-server/package.json /app/package.json
+
+RUN npm install -g mocha
 RUN npm install natural
 RUN npm install
 
