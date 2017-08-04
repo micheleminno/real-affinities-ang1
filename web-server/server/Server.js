@@ -6,6 +6,7 @@ var twitter = require('./twitter');
 var utilities = require('./utilities');
 
 var app = express();
+module.exports = app;
 
 var allowCrossDomain = function(req, res, next) {
 
