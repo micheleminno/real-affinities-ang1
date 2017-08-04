@@ -1,12 +1,13 @@
-version: "2"
+version: "3.3"
 services:
   web:
+    image: micheleminno/real-affinities:latest
     env_file:
       - accounts.env
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: node_modules/.bin/nodemon server.js
+    command: node_modules/.bin/nodemon web-server/server/Server.js
     depends_on:
       - mysql
     volumes:
