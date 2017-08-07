@@ -11,8 +11,8 @@ WORKDIR /app
 
 ADD /web-server/package.json /app/package.json
 
+RUN npm install -g bcrypt
 RUN npm install -g mocha
-RUN npm install natural
 RUN npm install
 
 # add the rest of the files

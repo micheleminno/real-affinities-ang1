@@ -51,7 +51,7 @@ function getTwitter(userIndex) {
 	});
 }
 
-function updateAffinityValues(connection, ids, relationType, add, callback) {
+function updateAffinityValues(ids, relationType, add, callback) {
 
 	var followsIncrement = 0;
 	var followedByIncrement = 0;
@@ -133,7 +133,7 @@ function sendResult(userId, nextPage, cursor, relationType, callback) {
 }
 
 function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
-		credentialsIndex, relationType, add, connection, callback) {
+		credentialsIndex, relationType, add, callback) {
 
 	if (nextPage <= lastPageToFetch && cursor !== 0) {
 
@@ -191,7 +191,6 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
     																credentialsIndex,
     																relationType,
     																add,
-    																connection,
     																callback);
     												   }
 													} else {
@@ -199,7 +198,6 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 														cursor = data.next_cursor;
 
 														updateAffinityValues(
-																connection,
 																data.ids,
 																relationType,
 																add,
@@ -231,10 +229,8 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 																			credentialsIndex,
 																			relationType,
 																			add,
-																			connection,
 																			callback);
 																});
-
 													}
 												});
 							} else {
@@ -259,7 +255,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 									return updateAffinities(userId, nextPage,
 											lastPageToFetch, cursor,
 											credentialsIndex, relationType,
-											add, connection, callback);
+											add, callback);
 								} else {
 
 									console
@@ -282,7 +278,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 
 
 
-exports.add = function(connection, userId, callback) {
+exports.add = function(userId, callback) {
 
 	result = {
 		"userId" : userId,
@@ -292,12 +288,12 @@ exports.add = function(connection, userId, callback) {
 
 	relationTypes.forEach(function(relationType) {
 
-		updateAffinities(userId, 1, 15, -1, 0, relationType, true, connection,
+		updateAffinities(userId, 1, 15, -1, 0, relationType, true,
 				callback);
 	});
 };
 
-exports.remove = function(connection, userId, callback) {
+exports.remove = function(userId, callback) {
 
 	result = {
 		"userId" : userId,
@@ -327,7 +323,7 @@ exports.remove = function(connection, userId, callback) {
 				relationTypes.forEach(function(relationType) {
 
 					updateAffinities(userId, 1, fetchLimits[relationType], -1,
-							0, relationType, false, connection, callback);
+							0, relationType, false, callback);
 				});
 
 			} else {

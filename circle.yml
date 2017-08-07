@@ -4,11 +4,11 @@ machine:
 
 dependencies:
   override:
-    - docker build -t micheleminno/app-node .
+    - docker build -t micheleminno/real-affinities .
 
 test:
   override:
-    - docker run micheleminno/app-node npm test
+    - docker run micheleminno/real-affinities npm test
 
 deployment:
   production:

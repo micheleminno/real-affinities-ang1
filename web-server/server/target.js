@@ -25,46 +25,40 @@ exports.list = function(req, res) {
 
 exports.add = function(req, res) {
 
-	req.getConnection(function(err, connection) {
-
 		var userId = req.query.id;
-		affinities.add(connection, userId, function(data) {
+		affinities.add(userId, function(data) {
 
             if(data.userId === null) {
 
                 res.status(NOK).json({
                     error : "User " + userId + " doesn't exist"
-				});
+				        });
             }
             else {
-    			console.log("Affinities added for user " + userId);
 
-    			var query = "INSERT IGNORE INTO target VALUES (" + userId + ", "
-    					+ data["followers"]["page"] + ", "
-    					+ data["friends"]["page"] + ", "
-    					+ data["followers"]["cursor"] + ", "
-    					+ data["friends"]["cursor"] + ")";
+            	console.log("Affinities added for user " + userId);
 
-    			connection.query(query, function(err, rows) {
+            	var query = "INSERT IGNORE INTO target VALUES (" + userId + ", "
+        					+ data["followers"]["page"] + ", "
+        					+ data["friends"]["page"] + ", "
+        					+ data["followers"]["cursor"] + ", "
+        					+ data["friends"]["cursor"] + ")";
 
-    				if (err) {
-    					console.log("MySQL " + err);
-    				} else {
-    					if (rows.affectedRows > 0) {
+              db.raw(query).then(function(response) {
 
-    						console.log("User " + userId + " inserted");
-    						res.end("1");
+                if (response.rows.affectedRows > 0) {
 
-    					} else {
+                  console.log("User " + userId + " inserted");
+                  res.end("1");
 
-    						console.log("User " + userId + " already present");
-    						res.end("0");
-    					}
-    				}
-    			});
-    		}
+                } else {
+
+                  console.log("User " + userId + " already present");
+                  res.end("0");
+                }
+              })
+    		   }
 		});
-	});
 };
 
 exports.remove = function(req, res) {
