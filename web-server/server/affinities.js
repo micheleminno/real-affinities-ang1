@@ -11,15 +11,12 @@ exports.interesting = function(req, res) {
 
 	var offset = req.query.offset;
 	var amount = req.query.amount;
-	req.getConnection(function(err, connection) {
 
-		connection.query('SELECT id from affinity '
-				+ 'ORDER BY followed_by DESC, follows DESC LIMIT ' + offset
-				+ ',' + amount, function(err, rows) {
-
-			if (err) {
-				console.log("Error Selecting : %s ", err);
-			} else {
+	db.select('id').
+		from('affinity')
+		.orderByRaw('followed_by DESC, follows DESC')
+		.limit(amount).offset(offset)
+		.then(function(rows) {
 
 				var ids = [];
 				for ( var rowIndex in rows) {
@@ -30,13 +27,10 @@ exports.interesting = function(req, res) {
 				res.status(OK).json('interesting', {
 					interestingIds : ids
 				});
-			}
 		});
-	});
 };
 
 var userAccounts = process.env.accounts;
-//JSON.parse(fs.readFileSync("./twitter-accounts.json", "utf8"));
 
 var relationTypes = [ 'followers', 'friends' ];
 var result = {};
@@ -93,12 +87,7 @@ function updateAffinityValues(ids, relationType, add, callback) {
 				+ followsIncrement + ", followed_by = followed_by + "
 				+ followedByIncrement;
 
-		connection.query(query, function(err, rows) {
-
-			if (err) {
-
-				console.log("MySQL " + err);
-			}
+		db.raw(query).then(function(response) {
 
 			done(null);
 		});
@@ -301,14 +290,9 @@ exports.remove = function(userId, callback) {
 		"friends" : {}
 	};
 
-	connection.query("SELECT * from target WHERE id = " + userId, function(err,
-			rows) {
-
-		if (err) {
-
-			console.log("Problem with MySQL" + err);
-
-		} else {
+	db.from('users')
+		.where('id', userId)
+		.then(function(rows) {
 
 			if (rows.length > 0) {
 
@@ -329,6 +313,5 @@ exports.remove = function(userId, callback) {
 			} else {
 				// User doesn't exist, nothing to do
 			}
-		}
 	});
 };

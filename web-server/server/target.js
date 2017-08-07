@@ -63,59 +63,46 @@ exports.add = function(req, res) {
 
 exports.remove = function(req, res) {
 
-	req.getConnection(function(err, connection) {
 
 		var userId = req.query.id;
-		affinities.remove(connection, userId, function(data) {
+		affinities.remove(userId, function(data) {
 
 			console.log("Affinities removed for user " + userId);
 			console.log(JSON.stringify(data));
 
-			connection.query("DELETE FROM target WHERE id = " + userId,
-					function(err, rows) {
-						if (err) {
-							console.log("Problem with MySQL" + err);
-						} else {
-							res.end("1");
-						}
-					});
-		});
-	});
+			db('target')
+        .where('id', userId)
+        .del()
+        .then(function() {
+
+            	res.end("1");
+				});
+	 });
 };
 
 exports.removeAll = function(req, res) {
 
-	req.getConnection(function(err, connection) {
+		db('target')
+      .truncate()
+      .then(function() {
 
-		connection.query("TRUNCATE TABLE target", function(err, rows) {
-			if (err) {
-				console.log("Problem with MySQL" + err);
-			} else {
-				connection.query("TRUNCATE TABLE affinity",
-						function(err, rows) {
-							if (err) {
-								console.log("Problem with MySQL" + err);
-							} else {
-								res.end("1");
-							}
-						});
-			}
-		});
-	});
+        db('affinity')
+          .truncate()
+          .then(function() {
+
+          			res.end("1");
+					});
+	 });
 };
 
 exports.contains = function(req, res) {
 
-	req.getConnection(function(err, connection) {
+		db('target')
+      .count('* as t')
+      .where('id', req.query.id)
+      .then(function() {
 
-		connection.query("SELECT COUNT(*) from target WHERE id = "
-				+ req.query.id, function(err, rows) {
+				res.end(JSON.stringify(rows[0]["t"]));
 
-			if (err) {
-				console.log("Problem with MySQL" + err);
-			} else {
-				res.end(JSON.stringify(rows[0]["COUNT(*)"]));
-			}
-		});
-	});
+		  });
 };

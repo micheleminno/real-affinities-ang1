@@ -1,4 +1,4 @@
-FROM sunnyone/python-node-latest
+FROM node:6.11-alpine
 
 EXPOSE 3000
 ENV NODE_ENV production
@@ -11,7 +11,8 @@ WORKDIR /app
 
 ADD /web-server/package.json /app/package.json
 
-RUN npm install -g bcrypt
+RUN apk add --no-cache make gcc g++ python
+
 RUN npm install -g mocha
 RUN npm install
 

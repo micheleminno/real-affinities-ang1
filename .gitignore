@@ -6,3 +6,5 @@ twitter-accounts.env
 .nyc_output/
 artifacts/
 .settings/
+package-lock.json
+
