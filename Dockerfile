@@ -1,4 +1,4 @@
-FROM node:6.11-alpine
+FROM node:8.1.4-alpine
 
 EXPOSE 3000
 ENV NODE_ENV production
@@ -13,8 +13,8 @@ ADD /web-server/package.json /app/package.json
 
 RUN apk add --no-cache make gcc g++ python
 
-RUN npm install -g mocha
-RUN npm install
+RUN npm install -gq mocha
+RUN npm install -q
 
 # add the rest of the files
 ADD . /app

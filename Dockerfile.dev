@@ -1,4 +1,4 @@
-FROM node:6.11-alpine
+FROM node:8.1.4-alpine
 
 EXPOSE 3000
 ENV NODE_ENV development
