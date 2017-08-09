@@ -7,7 +7,7 @@ var NOK = 404;
 exports.list = function(req, res) {
 
   db.select('id')
-		.from('users')
+		.from('target')
 		.then(function(rows) {
 
 			var ids = [];
