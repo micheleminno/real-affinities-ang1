@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:5.6.0
+FROM node:8.1.4-alpine
 
 WORKDIR /app
 
@@ -10,5 +10,5 @@ RUN npm install
 # add the rest of the files
 ADD . /app
 
-ENV NODE_ENV production
+ENV NODE_ENV development
 CMD ["./node_modules/.bin/knex", "seed:run"]
