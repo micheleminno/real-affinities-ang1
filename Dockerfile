@@ -14,7 +14,6 @@ ADD /web-server/package.json /app/package.json
 RUN apk add --no-cache make gcc g++ python
 
 RUN npm install -gq mocha
-RUN npm install -gq supertest
 RUN npm install -q
 
 # add the rest of the files
