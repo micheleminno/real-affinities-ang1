@@ -13,6 +13,8 @@ ADD /web-server/package.json /app/package.json
 
 RUN apk add --no-cache make gcc g++ python
 
+RUN npm config set unsafe-perm=true
+
 RUN npm install -gq mocha
 RUN npm install -gq supertest
 RUN npm install -q
