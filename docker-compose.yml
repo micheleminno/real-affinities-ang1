@@ -6,7 +6,7 @@ services:
       - accounts.env
     build:
       context: .
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile
     command: node_modules/.bin/nodemon web-server/server/Server.js
     depends_on:
       - mysql
@@ -19,15 +19,15 @@ services:
     image: mysql:5.5
     environment:
       - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=real-affinities-test
-      - MYSQL_USER=development
-      - MYSQL_PASSWORD=development
+      - MYSQL_DATABASE=real-affinities
+      - MYSQL_USER=production
+      - MYSQL_PASSWORD=production
     ports:
       - 3306:3306
   migrations:
     image: micheleminno/db-migrations:latest
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
     depends_on:
       - mysql
   fixtures:
