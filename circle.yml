@@ -4,7 +4,7 @@ machine:
 
 dependencies:
   override:
-    - docker build -t micheleminno/real-affinities .
+    - docker build -t micheleminno/real-affinities . -f Dockerfile-dev
 
 test:
   override:
