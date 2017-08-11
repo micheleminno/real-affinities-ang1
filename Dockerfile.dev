@@ -2,6 +2,12 @@ FROM node:8.1.4-alpine
 
 EXPOSE 3000
 ENV NODE_ENV development
+
+RUN install -d -o node -g node /myapp
+WORKDIR /myapp
+USER node
+
+
 RUN mkdir /app
 WORKDIR /app
 
