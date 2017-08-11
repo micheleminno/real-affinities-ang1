@@ -4,8 +4,8 @@ module.exports = {
     connection: {
       database: "real-affinities-test",
       host:     "mysql",
-      user:     "test",
-      password: "test",
+      user:     "development",
+      password: "development",
     },
   },
   production: {

@@ -16,8 +16,8 @@ switch(process.env.NODE_ENV) {
       connection: {
         database: "real-affinities-test",
         host:     "mysql",
-        user:     "test",
-        password: "test",
+        user:     "development",
+        password: "development",
       },
     };
     break;

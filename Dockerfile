@@ -8,8 +8,10 @@ WORKDIR /app
 
 # add package.json and run npm install before adding the rest of the files
 # this way, you only run npm install when package.json changes
-
 ADD /web-server/package.json /app/package.json
+
+# add the rest of the files
+ADD web-server /app
 
 RUN apk add --no-cache make gcc g++ python
 
