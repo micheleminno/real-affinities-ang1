@@ -1,7 +1,6 @@
 version: "3.3"
 services:
   web:
-    image: micheleminno/real-affinities:latest
     env_file:
       - accounts.env
     build:
