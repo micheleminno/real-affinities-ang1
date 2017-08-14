@@ -13,13 +13,12 @@ ADD /web-server/package.json /app/package.json
 # add the rest of the files
 ADD web-server /app
 
-
 RUN apk add --no-cache make gcc g++ python
 
 RUN npm install -g mocha
 RUN npm install
 
-CMD mocha
+CMD cd web-server && mocha
 
-# To run tests:
-# docker run --net realaffinities_default micheleminno/real-affinities
+# to run test on cli
+# docker-compose -f docker-compose.test.yml -p ci up --build

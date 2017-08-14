@@ -30,18 +30,16 @@ exports.interesting = function(req, res) {
 		});
 };
 
-var userAccounts = process.env.accounts;
-
 var relationTypes = [ 'followers', 'friends' ];
 var result = {};
 
 function getTwitter(userIndex) {
 
 	return new Twit({
-		consumer_key : userAccounts[userIndex]["consumer"],
-		consumer_secret : userAccounts[userIndex]["consumerSecret"],
-		access_token : userAccounts[userIndex]["token"],
-		access_token_secret : userAccounts[userIndex]["tokenSecret"],
+		consumer_key : process.env.accounts[userIndex]["consumer"],
+		consumer_secret : process.env.accounts[userIndex]["consumerSecret"],
+		access_token : process.env.accounts[userIndex]["token"],
+		access_token_secret : process.env.accounts[userIndex]["tokenSecret"],
 	});
 }
 
@@ -228,7 +226,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 										.log('\nRate limits reached for call /'
 												+ relationType
 												+ '/ids and credentials of '
-												+ userAccounts[credentialsIndex]["screenName"]);
+												+ process.env.accounts[credentialsIndex]["screenName"]);
 								var now = new Date();
 								var millisecs = now.getTime();
 								var lapseOfSeconds = resetDate
@@ -239,7 +237,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 												+ ' in '
 												+ lapseOfSeconds + ' seconds');
 								credentialsIndex++;
-								if (credentialsIndex < userAccounts.length) {
+								if (credentialsIndex < process.env.accounts.length) {
 
 									return updateAffinities(userId, nextPage,
 											lastPageToFetch, cursor,
