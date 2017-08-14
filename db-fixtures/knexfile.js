@@ -5,7 +5,7 @@ module.exports = {
       database: "real-affinities-test",
       host:     "mysql",
       user:     "development",
-      password: "development",
+      password: "development"
     },
   },
   production: {
@@ -14,7 +14,7 @@ module.exports = {
       database: "real-affinities",
       host:     "mysql",
       user:     "production",
-      password: "production",
+      password: "production"
     },
   },
 };
