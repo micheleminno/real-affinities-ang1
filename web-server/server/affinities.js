@@ -35,11 +35,18 @@ var result = {};
 
 function getTwitter(userIndex) {
 
+	var consumer = process.env["user" + userIndex + "consumer"];
+	var consumerSecret = process.env["user" + userIndex + "consumerSecret"];
+	var accessToken = process.env["user" + userIndex + "token"];
+	var accessTokenSecret = process.env["user" + userIndex + "tokenSecret"];
+
+	console.log(JSON.stringify(process.env));
+
 	return new Twit({
-		consumer_key : process.env.accounts[userIndex]["consumer"],
-		consumer_secret : process.env.accounts[userIndex]["consumerSecret"],
-		access_token : process.env.accounts[userIndex]["token"],
-		access_token_secret : process.env.accounts[userIndex]["tokenSecret"],
+		consumer_key : consumer,
+		consumer_secret : consumerSecret,
+		access_token : accessToken,
+		access_token_secret : accessTokenSecret
 	});
 }
 
@@ -226,7 +233,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 										.log('\nRate limits reached for call /'
 												+ relationType
 												+ '/ids and credentials of '
-												+ process.env.accounts[credentialsIndex]["screenName"]);
+												+ twitterAccounts[credentialsIndex]["screenName"]);
 								var now = new Date();
 								var millisecs = now.getTime();
 								var lapseOfSeconds = resetDate
@@ -237,7 +244,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 												+ ' in '
 												+ lapseOfSeconds + ' seconds');
 								credentialsIndex++;
-								if (credentialsIndex < process.env.accounts.length) {
+								if (credentialsIndex < twitterAccounts.length) {
 
 									return updateAffinities(userId, nextPage,
 											lastPageToFetch, cursor,
