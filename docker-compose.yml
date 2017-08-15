@@ -1,8 +1,7 @@
 version: "3.3"
 services:
   web:
-    env_file:
-      - accounts.env
+    env_file: accounts.env
     build:
       context: .
       dockerfile: Dockerfile

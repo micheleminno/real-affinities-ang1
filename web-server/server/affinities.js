@@ -229,11 +229,12 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 												});
 							} else {
 
+								var screenName = process.env["user" + userIndex + "screenName"]
 								console
 										.log('\nRate limits reached for call /'
 												+ relationType
 												+ '/ids and credentials of '
-												+ twitterAccounts[credentialsIndex]["screenName"]);
+												+ screenName);
 								var now = new Date();
 								var millisecs = now.getTime();
 								var lapseOfSeconds = resetDate
@@ -244,7 +245,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 												+ ' in '
 												+ lapseOfSeconds + ' seconds');
 								credentialsIndex++;
-								if (credentialsIndex < twitterAccounts.length) {
+								if (credentialsIndex < process.env.accountSize) {
 
 									return updateAffinities(userId, nextPage,
 											lastPageToFetch, cursor,
