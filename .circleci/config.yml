@@ -6,6 +6,11 @@ jobs:
     docker:
       - image: micheleminno/real-affinities
 
+    steps:
+      - checkout
+      - run: npm test
+
+      
 # machine:
 #   services:
 #     - docker
