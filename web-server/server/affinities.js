@@ -40,8 +40,6 @@ function getTwitter(userIndex) {
 	var accessToken = process.env["user" + userIndex + "token"];
 	var accessTokenSecret = process.env["user" + userIndex + "tokenSecret"];
 
-	console.log(JSON.stringify(process.env));
-
 	return new Twit({
 		consumer_key : consumer,
 		consumer_secret : consumerSecret,
