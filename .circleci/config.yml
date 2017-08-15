@@ -1,10 +1,12 @@
+version: 2
+
 machine:
   services:
     - docker
 
 dependencies:
   override:
-    - docker build -t micheleminno/real-affinities . 
+    - docker build -t micheleminno/real-affinities .
 
 test:
   override:
