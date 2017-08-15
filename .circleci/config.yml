@@ -1,20 +1,26 @@
 version: 2
 
-machine:
-  services:
-    - docker
+jobs:
+  build:
+    working_directory: ~
+    docker:
+      - image: micheleminno/real-affinities
 
-dependencies:
-  override:
-    - docker build -t micheleminno/real-affinities .
-
-test:
-  override:
-    - docker run micheleminno/real-affinities npm test
-
-deployment:
-  production:
-    branch: master
-    commands:
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - ./deploy.sh
+# machine:
+#   services:
+#     - docker
+#
+# dependencies:
+#   override:
+#     - docker build -t micheleminno/real-affinities .
+#
+# test:
+#   override:
+#     - docker run micheleminno/real-affinities npm test
+#
+# deployment:
+#   production:
+#     branch: master
+#     commands:
+#       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+#       - ./deploy.sh
