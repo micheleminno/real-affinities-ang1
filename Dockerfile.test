@@ -1,7 +1,7 @@
 FROM node:8.1.4-alpine
 
 EXPOSE 3000
-
+ENV NODE_ENV development
 RUN mkdir /app
 WORKDIR /app
 
@@ -14,8 +14,8 @@ ADD web-server /app
 
 RUN apk add --no-cache make gcc g++ python
 
-RUN npm install -g mocha
-RUN npm install
+RUN npm install -gq mocha
+RUN npm install -q
 
 CMD cd web-server && mocha
 

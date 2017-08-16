@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: node_modules/.bin/nodemon web-server/server/Server.js
     depends_on:
       - mysql
     volumes:

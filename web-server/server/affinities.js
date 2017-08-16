@@ -156,14 +156,8 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 
 													if (err) {
 
-														console
-																.log("Error: "
-																		+ JSON
-																				.stringify(err));
-
 														if(err.code === 34) {
 
-														    //User id doesn't exist
 														    console.log("User with id " + userId + " doesn't exist");
 														    var result = {"userId": null};
 														    callback(result);

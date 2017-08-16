@@ -21,4 +21,4 @@ RUN npm install -q
 # add the rest of the files
 ADD . /app
 
-CMD ["node", "server/Server.js"]
+CMD ["node_modules/.bin/nodemon", "web-server/server/Server.js"]

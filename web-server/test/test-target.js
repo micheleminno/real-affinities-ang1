@@ -16,7 +16,7 @@ describe("Target", function() {
                           .expect('Content-Type', /json/)
                           .expect(OK, done)
                           .expect({
-                                targetIds: []
+                                'targetIds': []
                           })
                           .end(done);
 
