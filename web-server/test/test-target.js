@@ -14,21 +14,33 @@ describe("Target", function() {
                           .get('/target')
                           .set('Accept', /json/)
                           .expect('Content-Type', /json/)
-                          .expect(OK, done)
                           .expect({
-                                'targetIds': []
+                                targetIds: []
                           })
+													.expect(OK)
                           .end(done);
 
 		});
 
-		it("add an unexisting target id", function(done) {
+		it("add a fake target id", function(done) {
 
 			 request(app)
                           .get('/target/add')
                           .query({id: '123'})
                           .set('Accept', /json/)
                           .expect('Content-Type', /json/)
-                          .expect(NOK, done);
+                          .expect(NOK)
+													.end(done);
+		});
+
+		it("add a real target id", function(done) {
+
+			 request(app)
+													.get('/target/add')
+													.query({id: '586565407'})
+													.set('Accept', /json/)
+													.expect('Content-Type', /json/)
+													.expect(OK)
+													.end(done);
 		});
 });

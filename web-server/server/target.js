@@ -30,7 +30,7 @@ exports.add = function(req, res) {
 
             if(data.userId === null) {
 
-                return res.json({error: "User " + userId + " doesn't exist"});
+                res.status(NOK).json({error: "User " + userId + " doesn't exist"});
             }
             else {
 

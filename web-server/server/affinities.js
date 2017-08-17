@@ -79,9 +79,6 @@ function updateAffinityValues(ids, relationType, add, callback) {
 		}
 	}
 
-	console.log(ids.length + " ids to update with relation type "
-			+ relationType);
-
 	async.each(ids, function(id, done) {
 
 		var query = "INSERT INTO affinity VALUES (" + id + ", "
@@ -158,8 +155,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 
 														if(err.code === 34) {
 
-														    console.log("User with id " + userId + " doesn't exist");
-														    var result = {"userId": null};
+																var result = {"userId": null};
 														    callback(result);
 														}
 														else {
