@@ -30,7 +30,6 @@ exports.interesting = function(req, res) {
 		});
 };
 
-var relationTypes = [ 'followers', 'friends' ];
 var result = {};
 
 function getTwitter(userIndex) {
@@ -269,11 +268,18 @@ exports.add = function(userId, callback) {
 		"friends" : {}
 	};
 
-	relationTypes.forEach(function(relationType) {
+	updateAffinities(userId, 1, 15, -1, 0, 'followers', true,
+			function(result) {
 
-		updateAffinities(userId, 1, 15, -1, 0, relationType, true,
-				callback);
-	});
+				if(result.userId !== null) {
+
+					updateAffinities(userId, 1, 15, -1, 0, 'friends', true, callback);
+				}
+				else {
+
+					callback(result);
+				}
+			});
 };
 
 exports.remove = function(userId, callback) {
@@ -284,7 +290,7 @@ exports.remove = function(userId, callback) {
 		"friends" : {}
 	};
 
-	db.from('users')
+	db.from('target')
 		.where('id', userId)
 		.then(function(rows) {
 
@@ -298,12 +304,19 @@ exports.remove = function(userId, callback) {
 					"friends" : friendsPagesAmount
 				};
 
-				relationTypes.forEach(function(relationType) {
+				updateAffinities(userId, 1, fetchLimits[relationType], -1,
+						0, 'followers', false, function(result) {
 
-					updateAffinities(userId, 1, fetchLimits[relationType], -1,
-							0, relationType, false, callback);
+							if(result.userId !== null) {
+
+								updateAffinities(userId, 1, fetchLimits[relationType], -1,
+										0, 'friends', false, callback);
+							}
+							else {
+
+								callback(result);
+							}
 				});
-
 			} else {
 				// User doesn't exist, nothing to do
 			}

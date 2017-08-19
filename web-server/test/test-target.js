@@ -43,4 +43,15 @@ describe("Target", function() {
 													.expect(OK)
 													.end(done);
 		});
+
+		it("remove a real target id", function(done) {
+
+			 request(app)
+													.get('/target/remove')
+													.query({id: '586565407'})
+													.set('Accept', /json/)
+													.expect('Content-Type', /json/)
+													.expect(OK)
+													.end(done);
+		});
 });

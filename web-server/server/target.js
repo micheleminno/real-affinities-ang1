@@ -26,11 +26,16 @@ exports.list = function(req, res) {
 exports.add = function(req, res) {
 
 		var userId = req.query.id;
-		affinities.add(userId, function(data) {
+
+    affinities.add(userId, function(data) {
+
+            var resultStatus = OK;
+            var resultJson = "";
 
             if(data.userId === null) {
 
-                res.status(NOK).json({error: "User " + userId + " doesn't exist"});
+                resultStatus = NOK;
+                resultJson = {error: "User " + userId + " doesn't exist"};
             }
             else {
 
@@ -46,16 +51,17 @@ exports.add = function(req, res) {
 
                 if (response.rows.affectedRows > 0) {
 
-                  console.log("User " + userId + " inserted");
-                  res.end("1");
+                    resultJson = {"User added": true, "User id": userId};
+                }
+                else {
 
-                } else {
-
-                  console.log("User " + userId + " already present");
-                  res.end("0");
+                  resultJson = {"User added": false, "User id": userId};
                 }
               })
-    		   }
+              .catch(function(error) { console.error(error); });
+    		    }
+
+            res.status(resultStatus).json(resultJson);
 		});
 };
 
