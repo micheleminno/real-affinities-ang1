@@ -48,8 +48,8 @@ exports.add = function(req, res) {
         					+ data["friends"]["cursor"] + ")";
 
               db.raw(query).then(function(response) {
-
-                if (response.rows.affectedRows > 0) {
+                
+                if (response.affectedRows > 0) {
 
                     resultJson = {"User added": true, "User id": userId};
                 }
@@ -58,7 +58,11 @@ exports.add = function(req, res) {
                   resultJson = {"User added": false, "User id": userId};
                 }
               })
-              .catch(function(error) { console.error(error); });
+              .catch(function(error) {
+
+                console.error(error);
+                res.status(NOK).json({"error": error})
+              });
     		    }
 
             res.status(resultStatus).json(resultJson);
@@ -67,8 +71,10 @@ exports.add = function(req, res) {
 
 exports.remove = function(req, res) {
 
-
 		var userId = req.query.id;
+    var resultStatus = OK;
+    var resultJson = "";
+
 		affinities.remove(userId, function(data) {
 
 			console.log("Affinities removed for user " + userId);
@@ -77,10 +83,24 @@ exports.remove = function(req, res) {
 			db('target')
         .where('id', userId)
         .del()
-        .then(function() {
+        .then(function(response) {
 
-            	res.end("1");
-				});
+          if (response === 1) {
+
+            resultJson = {"User deleted": true, "User id": userId};
+          }
+          else {
+
+            resultJson = {"User deleted": false, "User id": userId};
+          }
+        })
+        .catch(function(error) {
+
+          console.error(error);
+          res.status(NOK).json({"error": error})
+        });
+
+      res.status(resultStatus).json(resultJson);
 	 });
 };
 

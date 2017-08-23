@@ -1,10 +1,10 @@
 {
   "name": "realaffinities",
   "version": "1.0.0",
-  "description": "",
+  "description": "Find interesting Twitter accounts",
   "main": "server/Server.js",
   "keywords": [],
-  "author": "",
+  "author": "Michele Minno",
   "license": "GPL-3.0",
   "dependencies": {
     "async": "^2.5.0",
@@ -16,10 +16,13 @@
     "mysql": "^2.14.1",
     "natural": "^0.5.4",
     "twit": "^2.2.9",
-    "url-exists": "^1.0.3",
+    "url-exists": "^1.0.3"
+  },
+  "devDependencies": {
     "nodemon": "^1.11.0",
     "mocha": "^3.4.2",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "chai": "^4.1.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

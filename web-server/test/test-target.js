@@ -1,6 +1,7 @@
 const request = require('supertest');
 require('express');
 
+
 var OK = 200;
 var NOK = 404;
 
@@ -8,18 +9,18 @@ var app = require('../server/Server.js');
 
 describe("Target", function() {
 
-		it("should return the empty list of target ids", function(done) {
+		it("should return the list of target ids", function(done) {
 
 			 request(app)
                           .get('/target')
                           .set('Accept', /json/)
                           .expect('Content-Type', /json/)
-                          .expect({
-                                targetIds: []
-                          })
 													.expect(OK)
-                          .end(done);
+													.expect(function(res) {
 
+														res.body.targetsIds != null;
+													})
+                        .end(done);
 		});
 
 		it("add a fake target id", function(done) {
