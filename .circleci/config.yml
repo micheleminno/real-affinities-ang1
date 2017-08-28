@@ -4,7 +4,6 @@ jobs:
   build:
     working_directory: ~
     docker:
-      - image: real-affinities
       - image: mysql:5.5
         environment:
         - MYSQL_ROOT_PASSWORD: password
