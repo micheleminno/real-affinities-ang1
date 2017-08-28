@@ -12,6 +12,16 @@ services:
       - /app/node_modules
     ports:
       - 3000:3000
+  elasticsearch:
+    build: elasticsearch
+    working_dir: /data
+    command: /elasticsearch/bin/elasticsearch -Des.config=/elasticsearch/config/elasticsearch.yml
+    volumes:
+      - /Users/micheleminno/Developer/docker/real-affinities/elasticsearch/data:/data
+      - ./elasticsearch/config:/data/config
+    ports:
+      - "9200:9200"
+      - "9300:9300"
   mysql:
     image: mysql:5.5
     environment:

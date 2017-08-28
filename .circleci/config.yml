@@ -4,13 +4,13 @@ jobs:
   build:
     working_directory: ~
     docker:
+      - image: real-affinities
       - image: mysql:5.5
         environment:
         - MYSQL_ROOT_PASSWORD: password
         - MYSQL_DATABASE: real-affinities-test
         - MYSQL_USER: development
         - MYSQL_PASSWORD: development
-
       - image: micheleminno/db-migrations
         environment:
           - NODE_ENV: development
@@ -19,10 +19,14 @@ jobs:
       - run:
           name: Build real-affinities
           command: docker build -t micheleminno/real-affinities .
+    test:
+      docker:
+      - image: real-affinities
+    steps:
+      - checkout
       - run:
           name: Test real-affinities
           command: docker run micheleminno/real-affinities npm test
-
 
 # deployment:
 #   production:
