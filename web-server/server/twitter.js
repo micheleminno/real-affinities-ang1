@@ -33,8 +33,7 @@ var URLS_AMOUNT = 3;
 var RETWEETS_AMOUNT = 3;
 var UNIGRAMS_AMOUNT = 100;
 
-var userAccounts = process.env.accounts;
-//console.log(userAccounts.length + " Twitter accounts loaded");
+var userAccounts = JSON.parse(fs.readFileSync("./twitter-accounts.json", "utf8"));
 
 function getTwitter(userIndex) {
 

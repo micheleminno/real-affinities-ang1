@@ -7,7 +7,7 @@
 # Pull base image.
 FROM ubuntu:14.04
 
-ENV ES_PKG_NAME elasticsearch-1.7.3
+ENV ES_PKG_NAME elasticsearch-5.5.2
 
 # Install system level packages needed to install elastic search or dependancies.
 RUN sudo apt-get update
@@ -28,13 +28,19 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 # Install Elasticsearch.
 RUN \
     cd / && \
-    wget https://download.elasticsearch.org/elasticsearch/elasticsearch/$ES_PKG_NAME.tar.gz && \
+    wget https://artifacts.elastic.co/downloads/elasticsearch/$ES_PKG_NAME.tar.gz && \
     tar xvzf $ES_PKG_NAME.tar.gz && \
     rm -f $ES_PKG_NAME.tar.gz && \
     mv /$ES_PKG_NAME /elasticsearch
 
 # Mount elasticsearch.yml config
 ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
+
+RUN adduser --disabled-password --gecos "" elasticsearch
+RUN usermod -aG sudo elasticsearch
+RUN chown -R elasticsearch:elasticsearch elasticsearch/config
+
+USER elasticsearch
 
 # Expose ports.
 #   - 9200: HTTP

@@ -1,8 +1,6 @@
 path:
   data: /data/data
   logs: /data/log
-  plugins: /data/plugins
-  work: /data/work
 
 # Cluster information
 cluster.name: real-affinities
@@ -16,9 +14,13 @@ node.name: real-affinities
 
 # Turn off swap to get a big speed increase.  This will prevent the ES server
 # from swapping memory on the node. https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration.html#setup-configuration-memory
-bootstrap.mlockall: true
+# bootstrap.mlockall: true
 
 # Disable deleting all indices from the api.
-action.disable_delete_all_indices: true
+# action.disable_delete_all_indices: true
 
-indices.cluster.send_refresh_mapping: false
+# indices.cluster.send_refresh_mapping: false
+
+# log4j.shutdownHookEnabled: false
+# log4j2.disable.jmx: true
+# log4j.skipJansi: true
