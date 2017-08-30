@@ -13,7 +13,7 @@ exports.checkUrl = function(req, res) {
 			console.log("Error checking url %s : ", url, err);
 		} else {
 
-			res.status(OK).json('checkUrl', {
+			res.status(OK).json({
 				url : url,
 				exists : exists
 			});

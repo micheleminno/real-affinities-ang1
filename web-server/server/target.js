@@ -48,7 +48,7 @@ exports.add = function(req, res) {
         					+ data["friends"]["cursor"] + ")";
 
               db.raw(query).then(function(response) {
-                
+
                 if (response.affectedRows > 0) {
 
                     resultJson = {"User added": true, "User id": userId};
@@ -124,7 +124,7 @@ exports.contains = function(req, res) {
 		db('target')
       .count('* as t')
       .where('id', req.query.id)
-      .then(function() {
+      .then(function(rows) {
 
 				res.end(JSON.stringify(rows[0]["t"]));
 

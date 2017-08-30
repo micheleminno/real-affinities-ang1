@@ -7,6 +7,8 @@ var db = require('./db');
 var OK = 200;
 var NOK = 404;
 
+var userAccounts = JSON.parse(fs.readFileSync("./twitter-accounts.json", "utf8"));
+
 exports.interesting = function(req, res) {
 
 	var offset = req.query.offset;
@@ -34,10 +36,10 @@ var result = {};
 
 function getTwitter(userIndex) {
 
-	var consumer = process.env["user" + userIndex + "consumer"];
-	var consumerSecret = process.env["user" + userIndex + "consumerSecret"];
-	var accessToken = process.env["user" + userIndex + "token"];
-	var accessTokenSecret = process.env["user" + userIndex + "tokenSecret"];
+	var consumer = userAccounts[userIndex]["consumer"];
+	var consumerSecret = userAccounts[userIndex]["consumerSecret"];
+	var accessToken = userAccounts[userIndex]["token"];
+	var accessTokenSecret = userAccounts[userIndex]["tokenSecret"];
 
 	return new Twit({
 		consumer_key : consumer,
@@ -233,7 +235,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 												});
 							} else {
 
-								var screenName = process.env["user" + userIndex + "screenName"]
+								var screenName = userAccounts[userIndex]["screenName"]
 
 								console
 										.log('\nRate limits reached for call /'
@@ -249,7 +251,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 												+ relationType + ' in ' + lapseOfSeconds + ' seconds');
 
 								credentialsIndex++;
-								if (credentialsIndex < process.env.accountSize) {
+								if (credentialsIndex < userAccounts.length) {
 
 									return updateAffinities(userId, nextPage,
 											lastPageToFetch, cursor,

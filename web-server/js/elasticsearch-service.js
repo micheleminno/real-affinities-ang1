@@ -192,8 +192,8 @@ app.service('ElasticsearchService', function($q) {
 			index : 'real-affinities',
 			body : {
 				query : {
-					filtered : {
-						query : {
+					bool : {
+						must : {
 							match_all : {}
 						},
 						filter : {

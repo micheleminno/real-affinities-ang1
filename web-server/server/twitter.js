@@ -402,7 +402,7 @@ function call(method, options, credentialIndex, response) {
 							} else {
 
 								console.log(JSON.stringify(err));
-								response.status(ERROR).json('data', []);
+								response.status(ERROR);
 							}
 						} else {
 
@@ -410,7 +410,7 @@ function call(method, options, credentialIndex, response) {
 									+ " done with credentials of "
 									+ credentialsUser);
 
-							response.status(OK).json('data', data);
+							response.status(OK).json(data);
 						}
 					});
 }
