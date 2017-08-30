@@ -1,10 +1,3 @@
-##
-#
-# Dockerfile for our Elastic Search cluster.  The dockerfile is based off of
-#  https://github.com/dockerfile/elasticsearch.
-#
-
-# Pull base image.
 FROM ubuntu:14.04
 
 ENV ES_PKG_NAME elasticsearch-5.5.2
@@ -36,14 +29,10 @@ RUN \
 # Mount elasticsearch.yml config
 ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 
+# Run as elasticsearch user, not as root
+RUN groupadd elasticsearchGroup
 RUN adduser --disabled-password --gecos "" elasticsearch
+RUN adduser elasticsearch elasticsearchGroup
 RUN usermod -aG sudo elasticsearch
-RUN chown -R elasticsearch:elasticsearch elasticsearch/config
-
-USER elasticsearch
-
-# Expose ports.
-#   - 9200: HTTP
-#   - 9300: transport
-EXPOSE 9200
-EXPOSE 9300
+RUN chown -R elasticsearch:elasticsearchGroup elasticsearch/config
+USER elasticsearch:elasticsearchGroup

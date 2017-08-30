@@ -10,7 +10,7 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - 3000:3000
+      - "3000:3000"
   elasticsearch:
     build: elasticsearch
     working_dir: /data
@@ -21,6 +21,14 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+    environment:
+      - MAX_OPEN_FILES=1048576
+    cap_add:
+      - IPC_LOCK
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
   mysql:
     image: mysql:5.5
     environment:
@@ -29,7 +37,7 @@ services:
       - MYSQL_USER=production
       - MYSQL_PASSWORD=production
     ports:
-      - 3306:3306
+      - "3306:3306"
   migrations:
     image: micheleminno/db-migrations:latest
     environment:
