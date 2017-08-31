@@ -106,7 +106,7 @@ app.service('ElasticsearchService', function($q) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh('real-affinities');
+			var innerPromise = client.indices.refresh();
 
 			innerPromise.done(function(data) {
 
@@ -139,7 +139,7 @@ app.service('ElasticsearchService', function($q) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh('real-affinities');
+			var innerPromise = client.indices.refresh();
 
 			innerPromise.done(function(data) {
 
@@ -173,7 +173,7 @@ app.service('ElasticsearchService', function($q) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh('real-affinities');
+			var innerPromise = client.indices.refresh();
 
 			innerPromise.done(function(data) {
 
@@ -251,7 +251,7 @@ app.service('ElasticsearchService', function($q) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh('real-affinities');
+			var innerPromise = client.indices.refresh();
 
 			innerPromise.done(function(data) {
 
@@ -293,7 +293,7 @@ app.service('ElasticsearchService', function($q) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh('real-affinities');
+			var innerPromise = client.indices.refresh();
 
 			innerPromise.done(function(data) {
 

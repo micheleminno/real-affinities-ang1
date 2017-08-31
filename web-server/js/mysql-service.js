@@ -65,7 +65,7 @@ app.service('MysqlService', function($http, $q) {
 
 		return deferred.promise;
 	};
-	
+
 	this.getInterestingUsers = function(offset, amount) {
 
 		var deferred = $q.defer();

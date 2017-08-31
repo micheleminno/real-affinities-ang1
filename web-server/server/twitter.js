@@ -79,7 +79,7 @@ function sendResponse(resultBox, response) {
 
 	console.log("\nResult: " + text);
 
-	response.status(OK).json('data', {
+	response.status(OK).json({
 		value : text
 	});
 };
