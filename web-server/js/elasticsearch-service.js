@@ -85,30 +85,28 @@ app.service('ElasticsearchService', function($q) {
 		var query = {
 			index : 'real-affinities',
 			body : {
-				filtered : {
-					query : {
-						match_all : {}
-					},
-					filter : {
-						missing : {
-							field : 'is_interest'
-						}
+				query : {
+					bool : {
+						must : {
+							match_all : {}
+						},
+						must_not: {
+                exists: {
+                    field: 'is_interest'
+                }
+            }
 					}
 				}
 			}
 		};
 
-		var promise = client.deleteByQuery(query);
-
-		promise.done(function(data) {
+		var promise = client.deleteByQuery(query, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh();
+			client.indices.refresh(function(error, data) {
 
-			innerPromise.done(function(data) {
-
-				deferred.resolve(true);
+				deferred.resolve(data.ok);
 			});
 		});
 
@@ -121,7 +119,7 @@ app.service('ElasticsearchService', function($q) {
 
 		var nameWithoutInnerSpaces = name.replace(/ /g, "-");
 
-		var promise = client.index({
+		var docToIndex = {
 
 			index : 'real-affinities',
 			type : 'profile',
@@ -131,15 +129,13 @@ app.service('ElasticsearchService', function($q) {
 				query : query,
 				is_interest : true
 			}
-		});
+		};
 
-		promise.done(function(data) {
+		var promise = client.index(docToIndex, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh();
-
-			innerPromise.done(function(data) {
+			client.indices.refresh(function(error, data) {
 
 				deferred.resolve(data.ok);
 			});
@@ -154,7 +150,7 @@ app.service('ElasticsearchService', function($q) {
 
 		var nameWithoutInnerSpaces = name.replace(/ /g, "-");
 
-		var promise = client.update({
+		var params = {
 
 			index : 'real-affinities',
 			type : 'profile',
@@ -165,17 +161,15 @@ app.service('ElasticsearchService', function($q) {
 					content : text
 				}
 			}
-		});
+		};
 
-		promise.done(function(data) {
+		var promise = client.update(params, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh();
+			client.indices.refresh(function(error, data) {
 
-			innerPromise.done(function(data) {
-
-				deferred.resolve(data);
+				deferred.resolve(data.ok);
 			});
 		});
 
@@ -228,28 +222,26 @@ app.service('ElasticsearchService', function($q) {
 		var query = {
 			index : 'real-affinities',
 			body : {
-				filtered : {
-					query : {
-						match_all : {}
-					},
-					filter : {
-						exists : {
-							field : "is_interest"
+				query : {
+					bool : {
+						must : {
+							match_all : {}
+						},
+						filter : {
+							exists : {
+								field : "is_interest"
+							}
 						}
 					}
 				}
 			}
 		};
 
-		var promise = client.deleteByQuery(query);
-
-		promise.done(function(data) {
+		var promise = client.deleteByQuery(query, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh();
-
-			innerPromise.done(function(data) {
+			client.indices.refresh(function(error, data) {
 
 				deferred.resolve(data.ok);
 			});
@@ -267,31 +259,29 @@ app.service('ElasticsearchService', function($q) {
 		var query = {
 			index : 'real-affinities',
 			body : {
-				filtered : {
-					query : {
-						ids : {
-							type : 'profile',
-							values : [ nameWithoutInnerSpaces ]
-						}
-					},
-					filter : {
-						exists : {
-							field : "is_interest"
+				query : {
+					bool : {
+						must : {
+							ids : {
+								type : 'profile',
+								values : [ nameWithoutInnerSpaces ]
+							}
+						},
+						filter : {
+							exists : {
+								field : 'is_interest'
+							}
 						}
 					}
 				}
 			}
 		};
 
-		var promise = client.deleteByQuery(query);
-
-		promise.done(function(data) {
+		var promise = client.deleteByQuery(query, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
-			var innerPromise = client.indices.refresh();
-
-			innerPromise.done(function(data) {
+			client.indices.refresh(function(error, data) {
 
 				deferred.resolve(data.ok);
 			});
@@ -325,7 +315,7 @@ app.service('ElasticsearchService', function($q) {
 			}
 		};
 
-		client.search(query, function (error, data) {
+		client.search(query, function(error, data) {
 
 			var profiles = [];
 			for ( var hitIndex in data.hits.hits) {
