@@ -100,13 +100,13 @@ app.service('ElasticsearchService', function($q) {
 			}
 		};
 
-		var promise = client.deleteByQuery(query, function(error, data) {
+		client.deleteByQuery(query, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
 			client.indices.refresh(function(error, data) {
 
-				deferred.resolve(data.ok);
+				deferred.resolve(true);
 			});
 		});
 
@@ -131,13 +131,13 @@ app.service('ElasticsearchService', function($q) {
 			}
 		};
 
-		var promise = client.index(docToIndex, function(error, data) {
+		client.index(docToIndex, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
 			client.indices.refresh(function(error, data) {
 
-				deferred.resolve(data.ok);
+				deferred.resolve(true);
 			});
 		});
 
@@ -163,13 +163,13 @@ app.service('ElasticsearchService', function($q) {
 			}
 		};
 
-		var promise = client.update(params, function(error, data) {
+		client.update(params, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
 			client.indices.refresh(function(error, data) {
 
-				deferred.resolve(data.ok);
+				deferred.resolve(true);
 			});
 		});
 
@@ -237,13 +237,13 @@ app.service('ElasticsearchService', function($q) {
 			}
 		};
 
-		var promise = client.deleteByQuery(query, function(error, data) {
+		client.deleteByQuery(query, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
 			client.indices.refresh(function(error, data) {
 
-				deferred.resolve(data.ok);
+				deferred.resolve(true);
 			});
 		});
 
@@ -277,13 +277,13 @@ app.service('ElasticsearchService', function($q) {
 			}
 		};
 
-		var promise = client.deleteByQuery(query, function(error, data) {
+		client.deleteByQuery(query, function(error, data) {
 
 			console.log(JSON.stringify(data));
 
 			client.indices.refresh(function(error, data) {
 
-				deferred.resolve(data.ok);
+				deferred.resolve(true);
 			});
 		});
 
