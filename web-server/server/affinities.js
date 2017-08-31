@@ -20,7 +20,7 @@ exports.interesting = function(req, res) {
 
 				var ids = [];
 				var rows = response[0];
-				
+
 				for ( var rowIndex in rows) {
 
 					ids.push(rows[rowIndex]["id"]);
@@ -235,7 +235,7 @@ function updateAffinities(userId, nextPage, lastPageToFetch, cursor,
 												});
 							} else {
 
-								var screenName = userAccounts[userIndex]["screenName"]
+								var screenName = userAccounts[credentialsIndex]["screenName"]
 
 								console
 										.log('\nRate limits reached for call /'
