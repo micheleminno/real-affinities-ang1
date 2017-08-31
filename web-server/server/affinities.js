@@ -14,19 +14,19 @@ exports.interesting = function(req, res) {
 	var offset = req.query.offset;
 	var amount = req.query.amount;
 
-	db.select('id').
-		from('affinity')
-		.orderByRaw('followed_by DESC, follows DESC')
-		.limit(amount).offset(offset)
-		.then(function(rows) {
+	db.raw('SELECT id from affinity '
+				+ 'ORDER BY followed_by DESC, follows DESC LIMIT ' + offset
+				+ ', ' + amount).then(function(response) {
 
 				var ids = [];
+				var rows = response[0];
+				
 				for ( var rowIndex in rows) {
 
 					ids.push(rows[rowIndex]["id"]);
 				}
 
-				res.status(OK).json('interesting', {
+				res.status(OK).json({
 					interestingIds : ids
 				});
 		});

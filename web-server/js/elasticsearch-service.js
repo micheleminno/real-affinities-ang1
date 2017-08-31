@@ -16,7 +16,7 @@ app.service('ElasticsearchService', function($q) {
 			contentDates.push(profile.tweets[tweetIndex].created_at);
 		}
 
-		var promise = client.index({
+		var indexParams = {
 
 			index : 'real-affinities',
 			type : 'profile',
@@ -35,9 +35,9 @@ app.service('ElasticsearchService', function($q) {
 				content : content,
 				contentDates : contentDates
 			}
-		});
+		};
 
-		promise.done(function(data) {
+		client.index(indexParams, function(error, data) {
 
 			deferred.resolve(data);
 		});
@@ -62,9 +62,7 @@ app.service('ElasticsearchService', function($q) {
 			}
 		};
 
-		var promise = client.search(query);
-
-		promise.done(function(data) {
+		client.search(query, function (error, data) {
 
 			var profiles = [];
 			for ( var hitIndex in data.hits.hits) {
@@ -206,9 +204,7 @@ app.service('ElasticsearchService', function($q) {
 			}
 		};
 
-		var promise = client.search(query);
-
-		promise.done(function(data) {
+		client.search(query, function (error, data) {
 
 			var interests = [];
 			for ( var hitIndex in data.hits.hits) {
@@ -311,18 +307,25 @@ app.service('ElasticsearchService', function($q) {
 
 		var deferred = $q.defer();
 
-		var params = {
+		var query = {
 			index : 'real-affinities',
-			type : 'profile',
-			id : interest,
-			mlt_fields : 'content',
-			min_term_freq : 1,
-			min_doc_freq : 1
+			body : {
+				query : {
+					more_like_this : {
+						like : [
+            {
+							_type : 'profile',
+							_id : interest
+            }],
+						fields : ['content'],
+						min_term_freq : 1,
+						min_doc_freq : 1
+					}
+				}
+			}
 		};
 
-		var promise = client.mlt(params);
-
-		promise.done(function(data) {
+		client.search(query, function (error, data) {
 
 			var profiles = [];
 			for ( var hitIndex in data.hits.hits) {
