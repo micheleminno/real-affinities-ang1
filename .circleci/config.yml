@@ -6,10 +6,10 @@ jobs:
     docker:
       - image: mysql:5.5
         environment:
-        - MYSQL_ROOT_PASSWORD: password
-        - MYSQL_DATABASE: real-affinities-test
-        - MYSQL_USER: development
-        - MYSQL_PASSWORD: development
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: real-affinities-test
+          MYSQL_USER: development
+          MYSQL_PASSWORD: development
       - image: micheleminno/db-migrations
         environment:
           - NODE_ENV: development
