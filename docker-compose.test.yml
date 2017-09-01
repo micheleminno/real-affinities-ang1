@@ -20,8 +20,8 @@ services:
       - /Users/micheleminno/Developer/docker/real-affinities/elasticsearch/data:/data
       - ./elasticsearch/config:/data/config
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "92:9200"
+      - "93:9300"
     environment:
       - MAX_OPEN_FILES=1048576
     cap_add:
