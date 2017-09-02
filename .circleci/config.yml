@@ -3,7 +3,6 @@ version: 2
 jobs:
   build:
     docker:
-      - image: web
       - image: mysql:5.5
         environment:
           MYSQL_ROOT_PASSWORD: password
