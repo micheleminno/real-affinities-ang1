@@ -2,8 +2,8 @@ version: 2
 
 jobs:
   build:
-    working_directory: ~
     docker:
+      - image: web
       - image: mysql:5.5
         environment:
           MYSQL_ROOT_PASSWORD: password
@@ -14,6 +14,9 @@ jobs:
         environment:
           - NODE_ENV: development
       - image: elasticsearch
+
+    working_directory: ~/
+
     steps:
       - checkout
       - run:

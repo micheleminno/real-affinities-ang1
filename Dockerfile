@@ -22,3 +22,6 @@ RUN npm install -q
 ADD . /app
 
 CMD ["node_modules/.bin/nodemon", "web-server/server/Server.js"]
+
+# to run app
+# docker-compose -f docker-compose.yml -p ci up --build
