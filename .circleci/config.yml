@@ -13,7 +13,7 @@ jobs:
       - image: micheleminno/db-migrations
         environment:
           - NODE_ENV: development
-      - image: elasticsearch
+      - image: micheleminno/elasticsearch
 
     working_directory: ~/
 
