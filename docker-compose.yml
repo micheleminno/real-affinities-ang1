@@ -1,6 +1,7 @@
 version: "3.3"
 services:
   web:
+    image: micheleminno/real-affinities:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -13,7 +14,8 @@ services:
     ports:
       - "3000:3000"
   elasticsearch:
-    build: elasticsearch
+    image: micheleminno/elasticsearch:latest
+    # build: elasticsearch
     working_dir: /data
     command: /elasticsearch/bin/elasticsearch -Epath.conf=/elasticsearch/config
     volumes:
