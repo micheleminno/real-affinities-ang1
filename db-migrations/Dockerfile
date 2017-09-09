@@ -10,6 +10,9 @@ RUN npm install
 # add the rest of the files
 ADD . /app
 
+# change ownership recursively of all files
+RUN chown root:root . -R
+
 CMD ["./node_modules/.bin/knex", "migrate:latest"]
 
 
