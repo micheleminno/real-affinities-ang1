@@ -13,6 +13,7 @@ services:
       - /app/node_modules
     ports:
       - "3000:3000"
+    entrypoint: web-server/node_modules/.bin/nodemon web-server/server/Server.js
   elasticsearch:
     image: micheleminno/elasticsearch:latest
     # build: elasticsearch
