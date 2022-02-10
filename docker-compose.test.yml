@@ -1,8 +1,10 @@
 version: "3.3"
+
 services:
+
   web:
     build:
-      context: .
+      context: ./web-server
       dockerfile: Dockerfile.test
     depends_on:
       - mysql
@@ -11,21 +13,79 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - "30:3000"
-  elasticsearch:
-    image: micheleminno/elasticsearch:latest
+      - "3000:3000"
+    networks:
+      - nosqlnet
+      - sqlnet
+
   mysql:
-    image: mysql:5.5
+    image: mysql/mysql-server:latest
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=real-affinities-test
       - MYSQL_USER=development
       - MYSQL_PASSWORD=development
+    volumes:
+      - ./sql-test-setup:/docker-entrypoint-initdb.d
     ports:
-      - "33:3306"
-  migrations:
-    image: micheleminno/db-migrations:latest
-    environment:
-      - NODE_ENV=development
-    depends_on:
-      - mysql
+      - "3306:3306"
+    networks:
+      - sqlnet
+
+  elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:6.0.0
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      networks:
+        - nosqlnet
+      volumes:
+        - ./elastic-test-data:/usr/share/elasticsearch/data
+      environment:
+        - node.name=elasticsearch
+        - cluster.name=es-docker-cluster
+        - discovery.type=single-node
+        - discovery.zen.minimum_master_nodes=1
+        - bootstrap.memory_lock=true
+        - bootstrap.system_call_filter=false
+        - xpack.security.enabled=false
+        - xpack.monitoring.enabled=false
+        - xpack.ml.enabled=false
+        - xpack.watcher.enabled=false
+        - "http.cors.allow-origin=http://localhost"
+        - "http.cors.enabled=true"
+        - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+        - "http.cors.allow-credentials=true"
+        - "ES_JAVA_OPTS=-Xms1g -Xmx2g"
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+        nofile:
+          soft: 65536
+          hard: 65536
+
+  kibana:
+      image: docker.elastic.co/kibana/kibana:6.0.0
+      environment:
+        - ELASTICSEARCH_URL=http://192.168.176.2:9200
+        - xpack.security.enabled=false
+        - xpack.monitoring.enabled=false
+        - xpack.ml.enabled=false
+        - xpack.graph.enabled=false
+        - xpack.reporting.enabled=false
+        - xpack.grokdebugger.enabled=false
+      ports:
+        - "5601:5601"
+      networks:
+        - nosqlnet
+      depends_on:
+        - elasticsearch
+
+
+networks:
+
+  nosqlnet:
+    driver: bridge
+  sqlnet:
+    driver: bridge

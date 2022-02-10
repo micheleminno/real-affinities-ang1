@@ -1,6 +1,17 @@
-FROM node:8.1.4-alpine
+FROM ubuntu:16.04
+
+USER root
+
+RUN apt-get update
+RUN apt-get -qq update
+RUN apt-get install -y build-essential
+RUN apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
+RUN apt-get install -y nodejs
+
 
 EXPOSE 3000
+
 ENV NODE_ENV development
 RUN mkdir /app
 WORKDIR /app
