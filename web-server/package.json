@@ -25,6 +25,7 @@
     "chai": "^4.1.1"
   },
   "scripts": {
+    "start": "nodemon server/Server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
